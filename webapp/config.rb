@@ -1,34 +1,34 @@
-# Require any additional compass plugins here.
+require './app'
 
-# Set this to the root of your project when deployed:
-http_path = "/"
-css_dir = "stylesheets"
-sass_dir = "sass"
-images_dir = "images"
-javascripts_dir = "javascripts"
+# Compass Configuration
 
-output_style = :nested
-environment = :development
+require 'grid-coordinates'
 
-# To enable relative paths to assets via compass helper functions. Uncomment:
-# relative_assets = true
+# Configuration to use when running within Sinatra
+project_path          = Sinatra::Application.root
 
-# To disable debugging comments that display the original location of your selectors. Uncomment:
-# line_comments = false
-color_output = false
+# HTTP paths
+http_path             = '/'
+http_stylesheets_path = '/stylesheets'
+http_images_path      = '/images'
+http_javascripts_path = '/javascripts'
 
+# File system locations
+css_dir               = File.join 'public', 'stylesheets'
+sass_dir              = File.join 'views', 'stylesheets'
+images_dir            = File.join 'public', 'images'
+javascripts_dir       = File.join 'public', 'javascripts'
 
-# If you prefer the indented syntax, you might want to regenerate this
-# project again passing --syntax sass, or you can uncomment this:
-# preferred_syntax = :sass
-# and then run:
-# sass-convert -R --from scss --to sass sass scss && rm -rf sass && mv scss sass
+# Syntax preference
+preferred_syntax      = :sass
 
+# Determine whether Compass generates relative or absolute paths
+relative_assets       = false
 
-# This is common configuration
-sass_dir = File.join 'views', 'stylesheets'
-images_dir = File.join 'public', 'images'
-http_path = "/"
-http_images_path = "/images"
-http_stylesheets_path = "/stylesheets"
-output_style = :nested #:expanded #compressed #compact
+# Determines whether line comments should be added to compiled css for easier debugging
+line_comments         = false
+
+# CSS output style - :nested, :expanded, :compact, or :compressed
+output_style          = :expanded
+
+# Learn more: http://beta.compass-style.org/help/tutorials/configuration-reference/
