@@ -17,49 +17,53 @@
     </Toggle_greenspill>
     <ColorPicker_key_color>
         <name>key color</name>
-        <values_0>0.294117659</values_0>
-        <values_1>0.698039234</values_1>
-        <values_2>0.333333343</values_2>
+        <values_0>0.403921574</values_0>
+        <values_1>0.694117665</values_1>
+        <values_2>0.345098048</values_2>
         <values_3>1.000000000</values_3>
     </ColorPicker_key_color>
     <SliderFloat_base_mask_strength>
         <name>base mask strength</name>
-        <value>0.180000007</value>
+        <value>0.469999999</value>
     </SliderFloat_base_mask_strength>
     <SliderFloat_chroma_mask_strength>
         <name>chroma mask strength</name>
-        <value>0.790000021</value>
+        <value>0.234999999</value>
     </SliderFloat_chroma_mask_strength>
     <SliderFloat_green_spill_strength>
         <name>green spill strength</name>
-        <value>0.284999996</value>
+        <value>0.375000000</value>
     </SliderFloat_green_spill_strength>
     <SliderFloat_base_mask_black>
         <name>base mask black</name>
-        <value>0.219999999</value>
+        <value>0.439999998</value>
     </SliderFloat_base_mask_black>
     <SliderFloat_base_mask_white>
         <name>base mask white</name>
-        <value>0.560000002</value>
+        <value>0.600000024</value>
     </SliderFloat_base_mask_white>
     <SliderFloat_detail_mask_black>
         <name>detail mask black</name>
-        <value>0.100000001</value>
+        <value>0.045000002</value>
     </SliderFloat_detail_mask_black>
     <SliderFloat_detail_mask_white>
         <name>detail mask white</name>
-        <value>0.795000017</value>
+        <value>0.654999971</value>
     </SliderFloat_detail_mask_white>
     <SliderFloat_end_mask_black>
         <name>end mask black</name>
-        <value>0.425000012</value>
+        <value>0.319999993</value>
     </SliderFloat_end_mask_black>
     <SliderFloat_end_mask_white>
         <name>end mask white</name>
-        <value>0.915000021</value>
+        <value>0.600000024</value>
     </SliderFloat_end_mask_white>
     <Button_save_images>
         <name>save images</name>
         <value>0</value>
     </Button_save_images>
+    <Button_save_comp>
+        <name>save comp</name>
+        <value>0</value>
+    </Button_save_comp>
 </controls>

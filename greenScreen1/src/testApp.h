@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxGreenscreen.h"
+#include "ofxTileSaver.h"
 
 class testApp : public ofBaseApp {
 
@@ -22,7 +23,7 @@ public:
 
 	ofxGreenscreen greenscreen;
 	//ofVideoGrabber grabber;
-	ofImage greenPic, greenPic2; 
+	ofImage greenPic[4];
 
 	ofImage angel;
 	ofImage mask;
@@ -41,5 +42,13 @@ public:
 	
 	bool picOn; 
 	
-	ofFbo greenVBO; 
+	ofFbo greenFBO; 
+	string imgPath; 
+	
+	int curPic;
+	
+	ofxTileSaver saver;
+	bool saveHi; 
+	
+	ofPixels comp; 
 };
