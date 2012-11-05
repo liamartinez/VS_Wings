@@ -18,3 +18,8 @@
 
         %a{:href => thumb[:full]}
           %img{:src => thumb[:thumb]}
+          .facebook-like-button
+        %script{:src => "http://connect.facebook.net/en_US/all.js#xfbml=1"}
+        %fb:share-button{:href => thumb[:full]}
+          %a.twitter-follow-button{"data-count" => "horizontal", :href => thumb[:full]}
+        %script{:src => "http://platform.twitter.com/widgets.js", :type => "text/javascript"}
