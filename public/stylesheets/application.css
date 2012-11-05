@@ -1,0 +1,10 @@
+a {
+  color: #ccc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+img a {
+  border: none;
+  color: #000;
+}
