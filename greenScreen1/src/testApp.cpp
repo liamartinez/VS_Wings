@@ -12,17 +12,17 @@ bool saveImgs;
 //--------------------------------------------------------------
 void testApp::setup() {
 	
-	//imgPath = "IMG_1482_small.JPG"; 
-	
+	curPic = 0; 
+	imgPath = "pics/" + ofToString(curPic) + ".JPG";
+	imgPathHi = "pics/" + ofToString(curPic) + "b.JPG";
+	hires = false; 
 	saver.init(3, 20, true);
 	
-	curPic = 0; 
-	greenPic[curPic].loadImage("pics/" + ofToString(curPic) + ".JPG");
+	
+	greenPic[curPic].loadImage(imgPathHi);
 	angel.loadImage ("pics/gay_pride_angel.jpeg"); 
 	greenscreen.setPixels(greenPic[curPic].getPixelsRef());
 	comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
-	//greenVBO.clear(); 
-
 	greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
 	gui.setDraw(true);
 	picOn = false; 
@@ -86,8 +86,25 @@ void testApp::update() {
 	 */
 	
 	//have to reload the picture every frame to simulate video. maybe every 10 frames?
-	greenPic[curPic].loadImage("pics/" + ofToString(curPic) + ".JPG"); 
-	greenscreen.setPixels(greenPic[curPic].getPixelsRef());
+	
+	if (go) {
+		imgPath = "pics/" + ofToString(curPic) + ".JPG";
+		imgPathHi = "pics/" + ofToString(curPic) + "b.JPG";
+		if (hires) {
+			greenPic[curPic].loadImage(imgPathHi); 
+			cout << "loading HI" << endl; 
+		} else {
+			greenPic[curPic].loadImage(imgPath); 
+			cout << "loading low" << endl; 
+		}
+		
+		
+		greenscreen.setPixels(greenPic[curPic].getPixelsRef());
+		comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
+		greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
+
+		go = false; 
+	}
 #ifdef USE_GUI
 	if(gui.isOn()) {
 
@@ -100,11 +117,14 @@ void testApp::update() {
 			baseMask.setFromPixels(greenscreen.getBaseMask());
 			chromaMask.setFromPixels(greenscreen.getChromaMask());
 
+		
 			redSub.setFromPixels(greenscreen.getRedSub());
 			greenSub.setFromPixels(greenscreen.getGreenSub());
 			blueSub.setFromPixels(greenscreen.getBlueSub());
 		//}
 
+		
+		
 		if(saveImgs){
 			mask.saveImage("save/mask.jpg", OF_IMAGE_QUALITY_BEST);
 			detailMask.saveImage("save/detailMask.jpg", OF_IMAGE_QUALITY_BEST);
@@ -138,13 +158,22 @@ void testApp::draw() {
 	greenFBO.end();
 
 
-	
 	ofSetColor (255); 
 	greenFBO.draw(0, 0, 480, 720);
 
-	
+	ofSetColor(255,0,0);
+	ofDrawBitmapString("FPS "+ofToString(ofGetFrameRate()), 500, 20);
+	if (hires) {
+	ofDrawBitmapString("HIRES IS ON - H TO TOGGLE", 500, 35);
+	} else {
+		ofDrawBitmapString("HIRES IS OFF - H TO TOGGLE", 500, 35);
+	}
 	ofSetColor(255);
-	ofDrawBitmapString("FPS "+ofToString(ofGetFrameRate()), 5, greenscreen.getHeight()+20);
+	ofDrawBitmapString("CLICK AN AREA TO KEY", 500, 100);
+	ofDrawBitmapString("SPACEBAR TO EDIT", 500, 115);
+	ofDrawBitmapString("S TO SAVE", 500, 130);
+	ofDrawBitmapString("LEFT/ RIGHT TO CHANGE PICS", 500, 145);
+	
 	
 #ifdef USE_GUI
 	gui.draw();
@@ -179,6 +208,13 @@ void testApp::keyPressed(int key) {
 	
 	cout << "curpic: " << curPic << endl; 
 
+	go = true; 
+	if (hires) {
+		greenPic[curPic].loadImage(imgPathHi); 
+	} else {
+		greenPic[curPic].loadImage(imgPath); 
+		
+	}
 }
 
 //--------------------------------------------------------------
@@ -190,8 +226,18 @@ void testApp::keyReleased(int key) {
 	
 	if (key == 'p') picOn = !picOn; 
 	if(key=='s') {
+		
 		greenFBO.readToPixels(comp); 
-		ofSaveImage(comp, "saved.jpg", OF_IMAGE_QUALITY_BEST);  
+		ofSaveImage(comp, "saved.tif", OF_IMAGE_QUALITY_BEST);  
+		 
+		/*
+			if(key=='s') saver.finish("frame_" + ofToString(ofGetFrameNum()) + "_high.tif", true);
+		 */
+	}
+	
+	
+	if (key == 'h') {
+		hires = !hires; 
 	}
 }
 
@@ -231,6 +277,13 @@ void testApp::mousePressed(int x, int y, int button) {
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button) {
 	
+	if (hires != oldRes) {
+		//comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
+		//greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
+		oldRes = hires; 
+	}
+	
+	go = true;
 }
 
 //--------------------------------------------------------------

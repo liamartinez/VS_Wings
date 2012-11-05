@@ -41,9 +41,10 @@ public:
 	ofFloatColor tempC;
 	
 	bool picOn; 
+	bool go; 
 	
 	ofFbo greenFBO; 
-	string imgPath; 
+	string imgPath, imgPathHi; 
 	
 	int curPic;
 	
@@ -51,4 +52,5 @@ public:
 	bool saveHi; 
 	
 	ofPixels comp; 
+	bool hires, oldRes; 
 };

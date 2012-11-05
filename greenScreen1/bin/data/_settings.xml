@@ -44,7 +44,7 @@
     </SliderFloat_base_mask_white>
     <SliderFloat_detail_mask_black>
         <name>detail mask black</name>
-        <value>0.045000002</value>
+        <value>0.310000002</value>
     </SliderFloat_detail_mask_black>
     <SliderFloat_detail_mask_white>
         <name>detail mask white</name>
