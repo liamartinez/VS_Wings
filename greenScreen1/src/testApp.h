@@ -47,10 +47,16 @@ public:
 	string imgPath, imgPathHi; 
 	
 	int curPic;
+	int totalFiles; 
 	
 	ofxTileSaver saver;
 	bool saveHi; 
 	
 	ofPixels comp; 
 	bool hires, oldRes; 
+	string saveString; 
+	
+	ofDirectory dir;
+	int numFiles, oldFiles; 
+	
 };

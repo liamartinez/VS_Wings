@@ -17,9 +17,9 @@
     </Toggle_greenspill>
     <ColorPicker_key_color>
         <name>key color</name>
-        <values_0>0.403921574</values_0>
-        <values_1>0.694117665</values_1>
-        <values_2>0.345098048</values_2>
+        <values_0>0.737254918</values_0>
+        <values_1>0.737254918</values_1>
+        <values_2>0.737254918</values_2>
         <values_3>1.000000000</values_3>
     </ColorPicker_key_color>
     <SliderFloat_base_mask_strength>
