@@ -47,6 +47,7 @@ public:
 	string imgPath, imgPathHi; 
 	
 	int curPic;
+	int totalFiles; 
 	
 	ofxTileSaver saver;
 	bool saveHi; 
@@ -55,6 +56,7 @@ public:
 	bool hires, oldRes; 
 	string saveString; 
 	
-	ofDirectory hi, lo; 
+	ofDirectory dir;
+	int numFiles, oldFiles; 
 	
 };

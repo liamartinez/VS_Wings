@@ -13,13 +13,22 @@ bool saveImgs;
 void testApp::setup() {
 	
 	curPic = 0; 
+
+	dir.allowExt("jpg");
+	dir.listDir("pics/low");
+	numFiles =  dir.numFiles();
+	totalFiles = numFiles; 
+	for(int i = 0; i < numFiles; i++){
+		cout << dir.getPath(i) << endl;
+	}
+
 	imgPath = "pics/low/" + ofToString(curPic) + ".JPG";
 	imgPathHi = "pics/hi/" + ofToString(curPic) + "b.JPG";
 	hires = false; 
 	saver.init(3, 20, true);
 	
 	
-	greenPic[curPic].loadImage(imgPathHi);
+	greenPic[curPic].loadImage(imgPath);
 	angel.loadImage ("pics/gay_pride_angel.jpeg"); 
 	greenscreen.setPixels(greenPic[curPic].getPixelsRef());
 	comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
@@ -74,8 +83,8 @@ void testApp::setup() {
 #endif
 	
 	gui.addButton ("save comp", saveHi); 
-	ofBackground(0);
 	gui.loadFromXML();
+	ofBackground(0);
 }
 
 //--------------------------------------------------------------
@@ -88,6 +97,14 @@ void testApp::update() {
 	
 	//have to reload the picture every frame to simulate video. maybe every 10 frames?
 	
+	dir.listDir("pics/low");
+	if (dir.numFiles() > numFiles) {
+		totalFiles++; 
+		curPic = totalFiles - 1; 
+		numFiles = dir.numFiles(); 
+		go = true; 
+	}
+	
 	if (go) {
 		imgPath = "pics/low/" + ofToString(curPic) + ".JPG";
 		imgPathHi = "pics/hi/" + ofToString(curPic) + "b.JPG";
@@ -98,7 +115,6 @@ void testApp::update() {
 			greenPic[curPic].loadImage(imgPath); 
 			cout << "loading low" << endl; 
 		}
-		
 		
 		greenscreen.setPixels(greenPic[curPic].getPixelsRef());
 		comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
@@ -143,6 +159,7 @@ void testApp::update() {
 //--------------------------------------------------------------
 void testApp::draw() {
 	
+
 	greenFBO.begin();
 	ofEnableAlphaBlending();
 	ofSetColor (255); 
@@ -154,10 +171,12 @@ void testApp::draw() {
 	
 	ofDisableAlphaBlending(); 
 	greenFBO.end();
+
 	
 	
 	ofSetColor (255); 
 	greenFBO.draw(0, 0, 480, 720);
+	
 	
 	ofSetColor(255,0,0);
 	ofDrawBitmapString("FPS "+ofToString(ofGetFrameRate()), 500, 20);
@@ -200,12 +219,12 @@ void testApp::keyPressed(int key) {
 		}
 	if(key == OF_KEY_RIGHT)
 		//greenscreen.clipWhiteEndMask += .01;
-		if (curPic <3 ) {
+		if (curPic < totalFiles-1 ) {
 			curPic ++; 
 			//greenPic[curPic].loadImage("pics/" + ofToString(curPic) + ".JPG"); 
 			greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
 		} else {
-			curPic = 3; 
+			curPic = totalFiles-1; 
 		}
 	
 	
