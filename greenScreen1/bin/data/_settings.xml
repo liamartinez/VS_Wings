@@ -17,9 +17,9 @@
     </Toggle_greenspill>
     <ColorPicker_key_color>
         <name>key color</name>
-        <values_0>0.737254918</values_0>
-        <values_1>0.737254918</values_1>
-        <values_2>0.737254918</values_2>
+        <values_0>0.380392164</values_0>
+        <values_1>0.741176486</values_1>
+        <values_2>0.415686280</values_2>
         <values_3>1.000000000</values_3>
     </ColorPicker_key_color>
     <SliderFloat_base_mask_strength>
@@ -44,15 +44,15 @@
     </SliderFloat_base_mask_white>
     <SliderFloat_detail_mask_black>
         <name>detail mask black</name>
-        <value>0.310000002</value>
+        <value>0.170000002</value>
     </SliderFloat_detail_mask_black>
     <SliderFloat_detail_mask_white>
         <name>detail mask white</name>
-        <value>0.654999971</value>
+        <value>0.239999995</value>
     </SliderFloat_detail_mask_white>
     <SliderFloat_end_mask_black>
         <name>end mask black</name>
-        <value>0.300000012</value>
+        <value>0.329999983</value>
     </SliderFloat_end_mask_black>
     <SliderFloat_end_mask_white>
         <name>end mask white</name>
