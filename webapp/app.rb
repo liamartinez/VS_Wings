@@ -5,28 +5,6 @@ require 'aws/s3'
 
 include AWS::S3
 
-def s3_connect
-  Base.establish_connection!(
-    :access_key_id     => '',
-    :secret_access_key => ''
-  )
-end
-
- AWS::S3::Base.establish_connection!(
-    :access_key_id     => 'AKIAIZCSX656MZOD362A',
-    :secret_access_key => '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'
-  )
-get '/' do
-  s3_connect
-  @buckets = Service.buckets
-  haml :index
-end
-
-get '/bucket/:key' do
-  s3_connect
-  @bucket = Bucket.find(params[:key])
-  haml :bucket
-end
 
 # Helpers
 require './lib/render_partial'
