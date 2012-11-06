@@ -17,7 +17,7 @@ get '/' do
 
   @body_class = "index"
 
-  @images = Dir['public/images/*_large.JPG'].map do |f|
+  @images = Dir['public/images/*_large.JPG', 'public/images/*_large.jpg'].map do |f|
     full_path = f.gsub("public/", "")
     photo_name = full_path.gsub("images/", "").gsub("_large", "")
     thumb_path = full_path.gsub("_large", "_thumb")

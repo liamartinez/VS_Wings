@@ -1,21 +1,25 @@
 #content
   #info
     %h2 this/that show photos
-    %p.caption
-      \~ Michael Hoy
     %p
       Click on a photograph for the high resolution version.
     %p
       You can also option-click (mac) or right-click (pc) and select to download.
+    .row
   %ul
     -@images.each do |thumb|
       %li
+      .span4
         %p.info
           %a{:href => thumb[:full]}
             =thumb[:name]
           %span.size
             ="#{'%.0f' % (thumb[:size] / 1024)}k"
 
-
         %a{:href => thumb[:full]}
           %img{:src => thumb[:thumb]}
+          .facebook-like-button
+        %script{:src => "http://connect.facebook.net/en_US/all.js#xfbml=1"}
+        %fb:share-button{:href => thumb[:full]}
+          %a.twitter-follow-button{"data-count" => "horizontal", :href => thumb[:full]}
+        %script{:src => "http://platform.twitter.com/widgets.js", :type => "text/javascript"}
