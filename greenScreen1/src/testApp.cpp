@@ -29,12 +29,15 @@ void testApp::setup() {
 	
 	
 	greenPic[curPic].loadImage(imgPath);
+	greenPicOrig[curPic].loadImage(imgPath); 
 	angel.loadImage ("pics/gay_pride_angel.jpeg"); 
 	greenscreen.setPixels(greenPic[curPic].getPixelsRef());
 	comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
 	greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
 	gui.setDraw(true);
 	picOn = false; 
+	
+	go = true; 
 	
 	ofColor startColor(20, 200, 20);
 	greenscreen.setBgColor(startColor);
@@ -110,11 +113,14 @@ void testApp::update() {
 		imgPathHi = "pics/hi/" + ofToString(curPic) + "b.JPG";
 		if (hires) {
 			greenPic[curPic].loadImage(imgPathHi); 
+			greenPicOrig[curPic].loadImage(imgPathHi); 
 			cout << "loading HI" << endl; 
 		} else {
 			greenPic[curPic].loadImage(imgPath); 
+			greenPicOrig[curPic].loadImage(imgPath); 
 			cout << "loading low" << endl; 
 		}
+		
 		
 		greenscreen.setPixels(greenPic[curPic].getPixelsRef());
 		comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
@@ -186,14 +192,15 @@ void testApp::draw() {
 		ofDrawBitmapString("HIRES IS OFF - H TO TOGGLE", 500, 35);
 	}
 	ofSetColor(255);
-	ofDrawBitmapString("CLICK AN AREA TO KEY", 500, 100);
-	ofDrawBitmapString("SPACEBAR TO EDIT", 500, 115);
-	ofDrawBitmapString("LEFT/ RIGHT TO CHANGE PICS", 500, 130);
-	ofDrawBitmapString("S TO SAVE", 500, 145);
+	ofDrawBitmapString("1. CLICK AN AREA TO KEY", 500, 100);
+	ofDrawBitmapString("2. SPACEBAR TO EDIT", 500, 115);
+	ofDrawBitmapString("3. LEFT/ RIGHT TO CHANGE PICS", 500, 130);
+	ofDrawBitmapString("4. S TO SAVE", 500, 145);
+	ofDrawBitmapString("5. H TO TOGGLE RES", 500, 160);
 	
 	ofSetColor(0, 255, 0); 
-	ofDrawBitmapString("Loading image num: " + ofToString(curPic), 500, 160);
-	ofDrawBitmapString("Saved to data folder: " + saveString, 500, 185);
+	ofDrawBitmapString("Loading image num: " + ofToString(curPic), 500, 185);
+	ofDrawBitmapString("Saved to data folder: " + saveString, 500, 200);
 	
 	
 	
@@ -233,10 +240,14 @@ void testApp::keyPressed(int key) {
 	go = true; 
 	if (hires) {
 		greenPic[curPic].loadImage(imgPathHi); 
+		greenPicOrig[curPic].loadImage(imgPathHi); 
 	} else {
 		greenPic[curPic].loadImage(imgPath); 
+		greenPicOrig[curPic].loadImage(imgPath); 
 		
 	}
+	
+	
 }
 
 //--------------------------------------------------------------
@@ -288,7 +299,7 @@ void testApp::mousePressed(int x, int y, int button) {
 #ifdef USE_GUI
 	if(!gui.isOn())
 #endif
-		greenscreen.setBgColor(greenPic[curPic].getPixelsRef().getColor(x, y));
+		greenscreen.setBgColor(greenPicOrig[curPic].getPixelsRef().getColor(x, y));
 	ofColor pc; 
 #ifdef USE_GUI
 	
