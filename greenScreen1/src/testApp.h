@@ -53,4 +53,8 @@ public:
 	
 	ofPixels comp; 
 	bool hires, oldRes; 
+	string saveString; 
+	
+	ofDirectory hi, lo; 
+	
 };
