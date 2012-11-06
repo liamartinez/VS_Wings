@@ -1,6 +1,32 @@
 require 'rubygems'
 require 'sinatra'
 require 'haml'
+require 'aws/s3'
+
+include AWS::S3
+
+def s3_connect
+  Base.establish_connection!(
+    :access_key_id     => '',
+    :secret_access_key => ''
+  )
+end
+
+ AWS::S3::Base.establish_connection!(
+    :access_key_id     => 'AKIAIZCSX656MZOD362A',
+    :secret_access_key => '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'
+  )
+get '/' do
+  s3_connect
+  @buckets = Service.buckets
+  haml :index
+end
+
+get '/bucket/:key' do
+  s3_connect
+  @bucket = Bucket.find(params[:key])
+  haml :bucket
+end
 
 # Helpers
 require './lib/render_partial'
@@ -17,7 +43,7 @@ get '/' do
 
   @body_class = "index"
 
-  @images = Dir['public/images/*_large.JPG'].map do |f|
+  @images = Dir['public/images/*_large.JPG', 'public/images/*_large.jpg'].map do |f|
     full_path = f.gsub("public/", "")
     photo_name = full_path.gsub("images/", "").gsub("_large", "")
     thumb_path = full_path.gsub("_large", "_thumb")
@@ -25,7 +51,6 @@ get '/' do
     { :full => full_path, :thumb => thumb_path,
       :size => file_size, :name => photo_name }
   end
-
 
   haml :index, :layout => :'layouts/application'
 end

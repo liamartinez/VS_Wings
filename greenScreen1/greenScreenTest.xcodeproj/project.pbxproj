@@ -243,6 +243,9 @@
 		0AD8ADF31646E05600737F12 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		0AD8ADF51646E05600737F12 /* ofxMSAInteractiveObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMSAInteractiveObject.cpp; sourceTree = "<group>"; };
 		0AD8ADF61646E05600737F12 /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMSAInteractiveObject.h; sourceTree = "<group>"; };
+		0AD8AE83164787E200737F12 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		0AD8AE85164787E200737F12 /* ofxTileSaver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTileSaver.h; sourceTree = "<group>"; };
+		0AD8AE86164787E200737F12 /* ofxTileSaverImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTileSaverImage.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
@@ -707,9 +710,29 @@
 			path = src;
 			sourceTree = "<group>";
 		};
+		0AD8AE82164787E200737F12 /* ofxTileSaver */ = {
+			isa = PBXGroup;
+			children = (
+				0AD8AE83164787E200737F12 /* README */,
+				0AD8AE84164787E200737F12 /* src */,
+			);
+			name = ofxTileSaver;
+			path = ../../../../addons/ofxTileSaver;
+			sourceTree = "<group>";
+		};
+		0AD8AE84164787E200737F12 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				0AD8AE85164787E200737F12 /* ofxTileSaver.h */,
+				0AD8AE86164787E200737F12 /* ofxTileSaverImage.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		BB4B014C10F69532006C3DED /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				0AD8AE82164787E200737F12 /* ofxTileSaver */,
 				0AD8ADE71646E05600737F12 /* ofxMSAInteractiveObject */,
 				0AD8ADA61646DF0100737F12 /* ofxSimpleGuiToo */,
 				0A524482163CFB130060A097 /* ofxGreenscreen */,

@@ -11,18 +11,26 @@ bool saveImgs;
 
 //--------------------------------------------------------------
 void testApp::setup() {
-	greenPic.loadImage ("pics/IMG_1482_small.JPG"); 
+	
+	curPic = 0; 
+	imgPath = "pics/" + ofToString(curPic) + ".JPG";
+	imgPathHi = "pics/" + ofToString(curPic) + "b.JPG";
+	hires = false; 
+	saver.init(3, 20, true);
+	
+	
+	greenPic[curPic].loadImage(imgPathHi);
 	angel.loadImage ("pics/gay_pride_angel.jpeg"); 
-	//greenVBO.clear(); 
+	greenscreen.setPixels(greenPic[curPic].getPixelsRef());
+	comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
+	greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
+	gui.setDraw(true);
+	picOn = false; 
 	
-	greenVBO.allocate(greenPic.width, greenPic.height);
-	//greenPic2.loadImage ("pics/IMG_1487.JPG"); 
-	//greenPic.resize(640, 480);
-	//greenPic2.resize(640, 480);
+	ofColor startColor(20, 200, 20);
+	greenscreen.setBgColor(startColor);
+
 	
-	//grabber.initGrabber(640, 480);
-	//greenscreen.setCropLeft(.2);
-	//greenscreen.setCropRight(.2);
 #ifdef USE_GUI
 	gui.addTitle("SETTINGS");
 	gui.addToggle("detail mask", greenscreen.doDetailMask);
@@ -48,8 +56,9 @@ void testApp::setup() {
 	gui.addTitle("OUTPUT");
 	gui.addFPSCounter();
 	gui.addButton("save images", saveImgs);
+	
 	//gui.addContent("camera", grabber);
-	gui.addContent("picture", greenPic);
+	//gui.addContent("picture", greenPic[curPic]);
 	gui.addContent("base mask", baseMask);
 	gui.addContent("detail mask", detailMask);
 	gui.addContent("chroma mask", chromaMask);
@@ -60,10 +69,12 @@ void testApp::setup() {
 	gui.addContent("blue sub", blueSub);
 	gui.addContent("keyed", greenscreen);
 
-	gui.loadFromXML();
+	
 #endif
 	
+	gui.addButton ("save comp", saveHi); 
 	ofBackground(0);
+	gui.loadFromXML();
 }
 
 //--------------------------------------------------------------
@@ -75,8 +86,25 @@ void testApp::update() {
 	 */
 	
 	//have to reload the picture every frame to simulate video. maybe every 10 frames?
-	greenPic.loadImage ("pics/IMG_1482_small.JPG"); 
-	greenscreen.setPixels(greenPic.getPixelsRef());
+	
+	if (go) {
+		imgPath = "pics/" + ofToString(curPic) + ".JPG";
+		imgPathHi = "pics/" + ofToString(curPic) + "b.JPG";
+		if (hires) {
+			greenPic[curPic].loadImage(imgPathHi); 
+			cout << "loading HI" << endl; 
+		} else {
+			greenPic[curPic].loadImage(imgPath); 
+			cout << "loading low" << endl; 
+		}
+		
+		
+		greenscreen.setPixels(greenPic[curPic].getPixelsRef());
+		comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
+		greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
+
+		go = false; 
+	}
 #ifdef USE_GUI
 	if(gui.isOn()) {
 
@@ -89,11 +117,14 @@ void testApp::update() {
 			baseMask.setFromPixels(greenscreen.getBaseMask());
 			chromaMask.setFromPixels(greenscreen.getChromaMask());
 
+		
 			redSub.setFromPixels(greenscreen.getRedSub());
 			greenSub.setFromPixels(greenscreen.getGreenSub());
 			blueSub.setFromPixels(greenscreen.getBlueSub());
 		//}
 
+		
+		
 		if(saveImgs){
 			mask.saveImage("save/mask.jpg", OF_IMAGE_QUALITY_BEST);
 			detailMask.saveImage("save/detailMask.jpg", OF_IMAGE_QUALITY_BEST);
@@ -104,34 +135,45 @@ void testApp::update() {
 			greenscreen.saveImage("save/composition.png", OF_IMAGE_QUALITY_BEST);
 			saveImgs = false;
 		}
+		
+
+		
 	}
 #endif
 }
 
 //--------------------------------------------------------------
 void testApp::draw() {
-	
-	
-	
-	
-	greenVBO.begin();
+
+	greenFBO.begin();
 	ofEnableAlphaBlending();
 	ofSetColor (255); 
-	angel.draw(0,0, ofGetWidth(), ofGetHeight()); 
+	angel.draw(0,0, greenPic[curPic].width, greenPic[curPic].height); 
 	greenscreen.draw(0, 0, greenscreen.getWidth(), greenscreen.getHeight());
 
-	if (picOn) greenPic.draw(0, 0);
+	if (picOn) greenPic[curPic].draw(0, 0);
 	greenscreen.drawBgColor();
 	
 	ofDisableAlphaBlending(); 
-	greenVBO.end();
-	
-	
+	greenFBO.end();
+
+
 	ofSetColor (255); 
-	greenVBO.draw(0, 0);
-	
+	greenFBO.draw(0, 0, 480, 720);
+
+	ofSetColor(255,0,0);
+	ofDrawBitmapString("FPS "+ofToString(ofGetFrameRate()), 500, 20);
+	if (hires) {
+	ofDrawBitmapString("HIRES IS ON - H TO TOGGLE", 500, 35);
+	} else {
+		ofDrawBitmapString("HIRES IS OFF - H TO TOGGLE", 500, 35);
+	}
 	ofSetColor(255);
-	ofDrawBitmapString("FPS "+ofToString(ofGetFrameRate()), 5, greenscreen.getHeight()+20);
+	ofDrawBitmapString("CLICK AN AREA TO KEY", 500, 100);
+	ofDrawBitmapString("SPACEBAR TO EDIT", 500, 115);
+	ofDrawBitmapString("S TO SAVE", 500, 130);
+	ofDrawBitmapString("LEFT/ RIGHT TO CHANGE PICS", 500, 145);
+	
 	
 #ifdef USE_GUI
 	gui.draw();
@@ -145,11 +187,34 @@ void testApp::keyPressed(int key) {
 	if(key == OF_KEY_UP)
 		greenscreen.clipBlackEndMask += .01;
 	if(key == OF_KEY_LEFT)
-		greenscreen.clipWhiteEndMask -= .01;
+		//greenscreen.clipWhiteEndMask -= .01;
+		if (curPic > 0) {
+			curPic --; 
+			greenPic[curPic].loadImage("pics/" + ofToString(curPic) + ".JPG"); 
+			greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
+		} else {
+			curPic = 0; 
+		}
 	if(key == OF_KEY_RIGHT)
-		greenscreen.clipWhiteEndMask += .01;
+		//greenscreen.clipWhiteEndMask += .01;
+		if (curPic <3 ) {
+			curPic ++; 
+			greenPic[curPic].loadImage("pics/" + ofToString(curPic) + ".JPG"); 
+			greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
+		} else {
+			curPic = 3; 
+		}
+			
 	
+	cout << "curpic: " << curPic << endl; 
 
+	go = true; 
+	if (hires) {
+		greenPic[curPic].loadImage(imgPathHi); 
+	} else {
+		greenPic[curPic].loadImage(imgPath); 
+		
+	}
 }
 
 //--------------------------------------------------------------
@@ -160,7 +225,20 @@ void testApp::keyReleased(int key) {
 #endif
 	
 	if (key == 'p') picOn = !picOn; 
+	if(key=='s') {
+		
+		greenFBO.readToPixels(comp); 
+		ofSaveImage(comp, "saved.tif", OF_IMAGE_QUALITY_BEST);  
+		 
+		/*
+			if(key=='s') saver.finish("frame_" + ofToString(ofGetFrameNum()) + "_high.tif", true);
+		 */
+	}
 	
+	
+	if (key == 'h') {
+		hires = !hires; 
+	}
 }
 
 //--------------------------------------------------------------
@@ -183,13 +261,15 @@ void testApp::mousePressed(int x, int y, int button) {
 #ifdef USE_GUI
 	if(!gui.isOn())
 #endif
-	greenscreen.setBgColor(greenPic.getPixelsRef().getColor(x, y));
+	greenscreen.setBgColor(greenPic[curPic].getPixelsRef().getColor(x, y));
 	ofColor pc; 
 #ifdef USE_GUI
+	/*
 	ofColor c = greenscreen.getBgColor();
 	bgCol.r = c.r/255.;
 	bgCol.g = c.g/255.;
 	bgCol.b = c.b/255.;
+	 */
 	
 #endif
 }
@@ -197,6 +277,13 @@ void testApp::mousePressed(int x, int y, int button) {
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button) {
 	
+	if (hires != oldRes) {
+		//comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
+		//greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
+		oldRes = hires; 
+	}
+	
+	go = true;
 }
 
 //--------------------------------------------------------------
