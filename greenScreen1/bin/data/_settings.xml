@@ -52,7 +52,7 @@
     </SliderFloat_detail_mask_white>
     <SliderFloat_end_mask_black>
         <name>end mask black</name>
-        <value>0.319999993</value>
+        <value>0.300000012</value>
     </SliderFloat_end_mask_black>
     <SliderFloat_end_mask_white>
         <name>end mask white</name>
