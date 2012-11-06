@@ -24,6 +24,7 @@ public:
 	ofxGreenscreen greenscreen;
 	//ofVideoGrabber grabber;
 	ofImage greenPic[4];
+	ofImage greenPicOrig[4];
 
 	ofImage angel;
 	ofImage mask;

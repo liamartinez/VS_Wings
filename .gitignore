@@ -1,13 +1,20 @@
+<<<<<<< HEAD
 #rails specific
 *.sqlite3
 config/database.yml
 log/*
 tmp/*
 
+=======
+>>>>>>> a024f14ebe18793f28ed28870e5c2953cc1494fc
 ## generic files to ignore
 *~
 *.lock
 *.DS_Store
 *.swp
+<<<<<<< HEAD
 *.out
 .amazon_keys
+=======
+*.out
+>>>>>>> a024f14ebe18793f28ed28870e5c2953cc1494fc
