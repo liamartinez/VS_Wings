@@ -17,32 +17,26 @@
     </Toggle_greenspill>
     <ColorPicker_key_color>
         <name>key color</name>
-<<<<<<< HEAD
-        <values_0>0.380392164</values_0>
-        <values_1>0.741176486</values_1>
-        <values_2>0.415686280</values_2>
-=======
-        <values_0>0.400000006</values_0>
-        <values_1>0.733333349</values_1>
-        <values_2>0.400000006</values_2>
->>>>>>> a024f14ebe18793f28ed28870e5c2953cc1494fc
+        <values_0>0.384313732</values_0>
+        <values_1>0.745098054</values_1>
+        <values_2>0.419607848</values_2>
         <values_3>1.000000000</values_3>
     </ColorPicker_key_color>
     <SliderFloat_base_mask_strength>
         <name>base mask strength</name>
-        <value>0.469999999</value>
+        <value>0.300000012</value>
     </SliderFloat_base_mask_strength>
     <SliderFloat_chroma_mask_strength>
         <name>chroma mask strength</name>
-        <value>0.234999999</value>
+        <value>0.400000006</value>
     </SliderFloat_chroma_mask_strength>
     <SliderFloat_green_spill_strength>
         <name>green spill strength</name>
-        <value>0.375000000</value>
+        <value>0.400000006</value>
     </SliderFloat_green_spill_strength>
     <SliderFloat_base_mask_black>
         <name>base mask black</name>
-        <value>0.439999998</value>
+        <value>0.200000003</value>
     </SliderFloat_base_mask_black>
     <SliderFloat_base_mask_white>
         <name>base mask white</name>
@@ -50,15 +44,15 @@
     </SliderFloat_base_mask_white>
     <SliderFloat_detail_mask_black>
         <name>detail mask black</name>
-        <value>0.170000002</value>
+        <value>0.100000001</value>
     </SliderFloat_detail_mask_black>
     <SliderFloat_detail_mask_white>
         <name>detail mask white</name>
-        <value>0.239999995</value>
+        <value>0.600000024</value>
     </SliderFloat_detail_mask_white>
     <SliderFloat_end_mask_black>
         <name>end mask black</name>
-        <value>0.329999983</value>
+        <value>0.100000001</value>
     </SliderFloat_end_mask_black>
     <SliderFloat_end_mask_white>
         <name>end mask white</name>
@@ -70,6 +64,6 @@
     </Button_save_images>
     <Button_save_comp>
         <name>save comp</name>
-        <value>0</value>
+        <value>104</value>
     </Button_save_comp>
 </controls>
