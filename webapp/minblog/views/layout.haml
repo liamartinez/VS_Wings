@@ -1,0 +1,9 @@
+!!! 5
+%html
+  = haml :"/layouts/_head"
+  %body
+    = haml :"/layouts/_header"
+    #content
+      #wrapper
+        = yield
+      = haml :"/layouts/_footer"

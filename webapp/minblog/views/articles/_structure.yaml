@@ -1,0 +1,73 @@
+--- 
+- 
+  ? !ruby/symbol published
+  : "2011-03-21 17:05 PM"
+  ? !ruby/symbol rss_summary
+  : "<p>Most of the recaps that I have read of this year's conference are similar to last year's, in that they focus not on the content of the conference, but whether the conference should exist at all. (SXSWi is always followed by a flurry of recaps, because nobody is sure of what SXSWi is, so they are not sure if SXSWi is failing or succeeding.)</p>\n"
+  ? !ruby/symbol slug
+  : /articles/sxsw_interactive_2011_recap_one_persons_input
+  ? !ruby/symbol title
+  : "SXSW Interactive 2011 Recap: One Person's Input"
+- 
+  ? !ruby/symbol published
+  : "2011-03-01 11:44 PM"
+  ? !ruby/symbol rss_summary
+  : "<p>Almost a year ago, I moved from rainy Nashville to sunny Florida and joined the good people at <a href=\"http://hashrocket.com\">Hashrocket</a> -- from a team with 2 designers (me and another fellow), 1 frontend developer (me) and .5 backend developers (.2 of that was me) to a mature, agile, bleeding-edge web consultancy a couple dozen strong.</p>\n"
+  ? !ruby/symbol slug
+  : /articles/from_expressionengine_to_sinatra_and_heroku
+  ? !ruby/symbol title
+  : "From ExpressionEngine to Sinatra and Heroku"
+- 
+  ? !ruby/symbol published
+  : "2010-06-20 11:44 AM"
+  ? !ruby/symbol rss_summary
+  : "<p>I've been reading Jef Raskin's <a href=\"http://www.amazon.com/Humane-Interface-Directions-Designing-Interactive/dp/0201379376\">The Humane Interface</a>. It's packed with knowledge. Here's some.</p>\n"
+  ? !ruby/symbol slug
+  : /articles/reading_the_humane_interface_early_impressions
+  ? !ruby/symbol title
+  : "Reading \"The Humane Interface\" - Early Impressions"
+- 
+  ? !ruby/symbol published
+  : "2010-03-10 05:43 PM"
+  ? !ruby/symbol rss_summary
+  : "<p>I don't want to retread ground here -- google <a href=\"http://www.google.com/search?aq=f&amp;sourceid=chrome&amp;ie=UTF-8&amp;q=position+fixed+mobile+safari\">\"position fixed mobile safari\"</a> and you'll get plenty of solid articles about how to <em>simulate</em> fixed positioning using CSS/Javascript. What I'm here to do is explain why my money is on fixed positioning <strong>not</strong> being implemented on the iPad.</p>\n"
+  ? !ruby/symbol slug
+  : /articles/regarding_fixed_positioning_in_mobile_safari
+  ? !ruby/symbol title
+  : "Regarding Fixed Positioning in Mobile Safari"
+- 
+  ? !ruby/symbol published
+  : "2010-03-08 11:05 AM"
+  ? !ruby/symbol rss_summary
+  : "<p>For the few dozen faithful of you that attended PodCamp Nashville 2010 (and the even fewer dozen that read my articles) (lots of love to you all), here are the slides from my segment of Griffin Technology's presentation, entitled \"Is The iPad Just A Big iPhone?\" (Yes, we realize that the word \"the\" before \"iPad\" is against Apple rules. Rebellion!)</p>\n"
+  ? !ruby/symbol slug
+  : /articles/podcamp_nashville_2010_presentation
+  ? !ruby/symbol title
+  : "Podcamp Nashville 2010 Presentation"
+- 
+  ? !ruby/symbol published
+  : "2009-09-01 05:37 PM"
+  ? !ruby/symbol rss_summary
+  : "<p>This isn't strictly my design -- I was contracted in a development capacity -- but it was certainly an interesting change of pace to implement someone else's mockup and make it Web-friendly.</p>\n"
+  ? !ruby/symbol slug
+  : /articles/development_notes_krystal_blitz
+  ? !ruby/symbol title
+  : "Development Notes: Krystal Blitz"
+- 
+  ? !ruby/symbol published
+  : "2009-03-31 07:44 PM"
+  ? !ruby/symbol rss_summary
+  : "<p><em>This extremely simple mini-tutorial was written for Adobe CS3, but CS4 handles everything more or less the same way.</em></p>\n"
+  ? !ruby/symbol slug
+  : /articles/the_uber_droplet_tidy_your_work_folders
+  ? !ruby/symbol title
+  : "The Über-Droplet: Tidy Your Work Folders"
+- 
+  ? !ruby/symbol published
+  : "2009-03-26 01:36 PM"
+  ? !ruby/symbol rss_summary
+  : "<p><em>(This is an old article from a previous version of the website that I thought deserved reprinting here. I attempted to explain QS in terms that anyone can follow, and as such, the article is far too long. I hope you enjoy anyway. - C)</em></p>\n"
+  ? !ruby/symbol slug
+  : /articles/a_normal_persons_guide_to_quicksilver
+  ? !ruby/symbol title
+  : "A Normal Person's Guide to Quicksilver"

@@ -1,0 +1,352 @@
+@import 'reset.scss'
+
+html
+  webkit-text-size-adjust: none
+
+body
+  font-family: "proxima-nova-1","proxima-nova-2", arial, sans-serif
+  color: #282c2f
+  background: #3c4043
+  &#home
+    background: #3c4043
+    header
+      padding-top: 160px
+      margin-bottom: 30px
+      min-width: 400px
+      hgroup
+        margin-bottom: 20px
+      nav
+        border: none
+        background: none
+        ul
+          width: 400px
+          margin: 0 auto
+          overflow: hidden
+          display: block
+          li
+            a
+              position: relative
+              display: block
+              float: left
+              background: #eae9e2
+              padding: 4px 0
+              width: 100px
+              &:after
+                position: absolute
+                top: 12%
+                right: 0
+                height: 80%
+                width: 1px
+                background: #c3c3bc
+                content: ''
+              &:hover
+                color: #4b7595
+header
+  text-transform: uppercase
+  min-width: 940px
+  hgroup
+    background: url("/images/bg_header.png") center repeat-x #3c4043
+    text-align: center
+    a
+      display: block
+      width: 90%
+      margin: 0 auto
+      h1
+        padding-top: 125px
+        font-family: "proxima-nova-extra-condensed-1","proxima-nova-extra-condensed-2", arial, sans-serif
+        color: #cbc9bc
+        font-size: 22px
+        font-weight: 100
+        line-height: 20px
+      h2
+        color: #707477
+        font-size: 10px
+        font-weight: 600
+        padding: 0 0 10px 0
+  nav
+    border-bottom: 1px solid #cbc9bc
+    text-align: center
+    line-height: 26px
+    background: #eae9e2
+    ul
+      display: inline
+      width: 320px
+      li
+        display: inline
+        a
+          font-size: 10px
+          font-weight: 600
+          text-align: center
+          color: #282c2f
+          padding: 4px 12px
+          &:hover
+            color: #4b7595
+        &.selected a
+          border-bottom: 3px solid #cbc9bc
+          &:hover
+            color: #282c2f
+footer
+  width: 100%
+  min-width: 940px
+  clear: both
+  color: #707477
+  font-weight: bold
+  text-align: center
+  font-size: 12px
+  text-transform: uppercase
+  border-top: 1px solid #cbc9bc
+  a
+    width: 90%
+    margin: 0 auto
+    line-height: 26px
+    display: block
+    font-size: 10px
+    font-weight: 600
+    text-align: center
+    color: #282c2f
+    &:hover
+      color: #4b7595
+  p
+    padding: 60px 0 15px 0
+    background: #3c4043 url(/images/logo_footer.png) center 20px no-repeat
+  span
+    font-family: verdana
+
+#content
+  background: #eae9e2
+  #wrapper
+    width: 940px
+    margin: 0 auto
+    padding: 40px 20px 0 20px
+
+nav.article_listing
+  margin: 0 0 40px 0
+  ul
+    li
+      a
+        display: block
+        font-size: 16px
+        line-height: 16px
+        color: #282c2f
+        padding: 10px 15px
+        &:hover
+          background: #e3e2da
+        span
+          display: block
+          color: #707477
+          font-size: 10px
+          font-weight: bold
+
+ul.social
+  width: 200px
+  padding: 0 100px
+  margin: 0 auto
+  li
+    width: 33%
+    float: left
+    a
+      display: block
+      width: 21px
+      height: 21px
+      margin: 0 auto
+      text-indent: -9327px
+      background: url("/images/logo_social.png")
+    &.twitter
+      a
+        background-position: top left
+        &:hover
+          background-position: 0 -21px
+    &.facebook
+      a
+        background-position: -21px 0
+        &:hover
+          background-position: -21px -21px
+    &.dribbble
+      a
+        background-position: -63px 0
+        &:hover
+          background-position: -63px -21px
+
+section#digital_index,
+section#physical_index,
+section#about
+  img
+    box-shadow: 0 0 5px #d5d3c8
+    -webkit-box-shadow: 0 0 5px #d5d3c8
+  article
+    font-size: 12px
+    line-height: 16px
+    font-weight: 500
+    h1, h2
+      font-size: 14px
+      line-height: 18px
+      font-weight: bold
+    p
+      margin: 0 0 16px 0
+      color: #6d7174
+    ul
+      margin: 0 0 16px 0
+      color: #6d7174
+      list-style-type: square
+      padding: 0 30px
+    a
+      color: #4b7595
+      font-weight: 600
+      &:hover
+        border-bottom: 1px solid #cbc9bc
+section#digital_index
+  article
+    position: relative
+    overflow: hidden
+    padding: 5px 0 5px 5px
+    margin: -5px 0 40px -5px
+    img
+      width: 580px
+      min-height: 200px
+      float: left
+    h1, p, ul
+      width: 300px
+      float: right
+    h1
+      padding: 20px 0 0 0
+      margin: 0 0 16px 0
+    ul
+      font-weight: 600
+      color: #6d7174
+      padding: 0
+      list-style-type: none
+
+section#physical_index
+  section
+    clear: both
+    &.two_items
+      article
+        width: 460px
+  article
+    width: 300px
+    margin: 0 20px 30px 0
+    float: left
+    img
+      min-width: 300px
+      min-height: 300px
+      margin: 0 0 10px 0
+      display: block
+    h1, p
+      margin: 0 10px
+    &:last-of-type
+      margin-right: 0
+
+section#about
+  article
+    section
+      width: 420px
+      padding: 30px 20px
+      float: left
+      h1, h2
+        padding: 10px 0 16px 0
+      & + section
+        margin-left: 20px
+
+section#article_index
+  width: 400px
+  margin: 0 auto
+
+section#article_show
+  article
+    padding: 0 10px
+    margin: 0 0 40px 0
+    width: 550px
+    float: left
+    h1
+      font-size: 20px
+      color: #282c2f
+      font-weight: 600
+    h2
+      color: #707477
+      font-size: 10px
+      font-weight: bold
+      margin: 0 0 30px 0
+    h3, h4
+      font-size: 18px
+      font-weight: 600
+      padding: 20px 0 20px 0
+    h4
+      font-size: 15px
+    p, ul, ol
+      font-size: 13px
+      line-height: 22px
+      margin: 0 0 20px 0
+    blockquote
+      background: #e3e2da
+      padding: 20px 20px 1px 20px
+      margin: 0 -10px 20px -10px
+      p
+        font-size: 18px
+        line-height: 24px
+    pre
+      margin: 0 0 20px 0
+      padding: 20px
+      background: rgba(255,255,255,.8)
+      width: 470px
+      overflow-x: auto
+    ul
+      list-style-type: disc
+      padding: 0 40px
+    ol
+      list-style-type: decimal
+      padding: 0 40px
+    p.image
+      font-size: 12px
+      line-height: 16px
+      font-weight: 600
+      color: #6d7174
+      padding-left: 10px
+      img
+        margin-left: -10px
+        margin-bottom: 10px
+        display: block
+    a
+      color: #4b7595
+      &:hover
+        border-bottom: 1px solid #cbc9bc
+    aside
+      margin: 40px -20px 0 -20px
+      border-top: 1px solid #cbc9bc
+      padding: 20px
+      color: #707477
+  nav.article_listing
+    width: 360px
+    float: right
+    ul
+      li
+        a
+          font-size: 13px
+          margin-left: 14px
+        &.selected
+          a
+            padding-left: 30px
+            margin-left: 0
+            background: #e3e2da url("/images/bg_active_post.png") left center no-repeat
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
