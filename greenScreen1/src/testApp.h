@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxGreenscreen.h"
-#include "ofxTileSaver.h"
+#include "ofxUI.h"
 
 class testApp : public ofBaseApp {
 
@@ -10,6 +10,7 @@ public:
 	void setup();
 	void update();
 	void draw();
+	void exit(); 
 
 	void keyPressed  (int key);
 	void keyReleased(int key);
@@ -49,8 +50,7 @@ public:
 	
 	int curPic;
 	int totalFiles; 
-	
-	ofxTileSaver saver;
+
 	bool saveHi; 
 	
 	ofPixels comp; 
@@ -59,6 +59,7 @@ public:
 	
 	ofDirectory dir;
 	int numFiles, oldFiles; 
+	string newFile; 
 
 	int wingXoff, wingYoff;
 	int wingScale; 
@@ -66,5 +67,18 @@ public:
 	int wingState; 
 	
 	bool saveNow, isSaved; 
+	
+	bool quickEditMode; 
+	
+	ofImage angel;
+	
+	//ofxUI
+	ofxUICanvas *quickGui;   	
+	void guiEvent(ofxUIEventArgs &e);
+	float red, green, blue; 	
+	bool editing; 
+	string status;
+	bool quickToggle;
+	bool guiToggle; 
 	
 };

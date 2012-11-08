@@ -26,6 +26,7 @@ void testApp::setup() {
 	
 	numFiles =  dir.numFiles();
 	totalFiles = numFiles; 
+	newFile = dir.getName(totalFiles-1);
 	for(int i = 0; i < numFiles; i++){
 		cout << dir.getPath(i) << endl;
 	}
@@ -36,8 +37,8 @@ void testApp::setup() {
 	wingsHI.loadImage ("pics/angelwingsHI.png"); 
 
 	//set image paths before loading
-	imgPath = "pics/low/" + ofToString(curPic) + ".JPG";
-	imgPathHi = "pics/hi/" + ofToString(curPic) + "b.JPG";
+	imgPath = "pics/low/" + newFile; 
+	imgPathHi = "pics/hi/" + newFile; 
 	
 	
 
@@ -51,6 +52,7 @@ void testApp::setup() {
 
 	
 	//greenscreen the first frame
+	greenscreen.clear();
 	greenscreen.setPixels(greenPic[curPic].getPixelsRef());
 	comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
 	greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
@@ -106,7 +108,35 @@ void testApp::setup() {
 	
 #endif
 	
-	gui.addButton ("save comp", saveHi); 
+	//ofxGUI
+	float xInit = OFX_UI_GLOBAL_WIDGET_SPACING; 
+    float length = 320-xInit; 
+	float dim = 24; 
+	
+	quickGui = new ofxUICanvas(ofGetWidth()/2, ofGetHeight()/2 - 100, length+xInit, ofGetHeight());
+
+	quickGui->addLabelToggle("QUICK KEY MODE", false, length-xInit);	
+	
+	quickGui->addSpacer(length-xInit, 1); 	
+	quickGui->addWidgetDown(new ofxUILabel("DETAIL MASK BLACK", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("DETAILBLACK", 0.0, 1.f, greenscreen.clipBlackDetailMask, length-xInit,dim);
+	
+	quickGui->addSpacer(length-xInit, 1); 
+	quickGui->addWidgetDown(new ofxUILabel("DETAIL MASK WHITE", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("DETAILWHITE", 0.0, 1.f, greenscreen.clipWhiteDetailMask, length-xInit,dim);
+	
+	quickGui->addSpacer(length-xInit, 1); 
+	quickGui->addWidgetDown(new ofxUILabel("END MASK BLACK", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("CLIPBLACK", 0.0, 1.f, greenscreen.clipBlackEndMask, length-xInit,dim);
+	
+	quickGui->addSpacer(length-xInit, 1); 
+	quickGui->addWidgetDown(new ofxUILabel("END MASK WHITE", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("CLIPWHITE", 0.0, 1.f, greenscreen.clipWhiteEndMask, length-xInit,dim);
+	ofAddListener(quickGui->newGUIEvent,this,&testApp::guiEvent);	
+	
+	quickToggle = false; 
+	quickGui->toggleVisible(); 
+
 	gui.loadFromXML();
 	ofBackground(0);
 }
@@ -124,15 +154,17 @@ void testApp::update() {
 	if (dir.numFiles() > numFiles) {
 		totalFiles++; 
 		curPic = totalFiles - 1; 
+		newFile = dir.getName(totalFiles-1);
+		cout << "name of new file: " << newFile << endl; 
 		numFiles = dir.numFiles(); 
 		wingState = 2; 
 		go = true; 
 	}
 	
-	if (go) {
+	if (go || editing) {
 		cout << "                                go" << endl;
-		imgPath = "pics/low/" + ofToString(curPic) + ".JPG";
-		imgPathHi = "pics/hi/" + ofToString(curPic) + "b.JPG";
+		imgPath = "pics/low/" + newFile; 
+		imgPathHi = "pics/hi/" + newFile;
 		if (hires) {
 			greenPic[curPic].loadImage(imgPathHi); 
 			greenPicOrig[curPic].loadImage(imgPathHi); 
@@ -184,11 +216,23 @@ void testApp::update() {
 	if (saveNow) {
 		greenFBO.readToPixels(comp); 
 		
+		/*
 		if (hires) {
 			saveString = "saved_" + ofToString(curPic) + "_hi.tif"; 
 		} else {
 			saveString = "saved_" + ofToString(curPic) + "_lo.tif"; 
 		}
+		 */
+		
+		string newName = newFile; 
+		ofStringReplace(newName, ".JPG", "_");
+		
+		if (hires) {
+			saveString = "saved_" + newName + "hi.tif";
+		} else {
+			saveString = "saved_" + newName + "lo.tif";
+		}
+			
 		
 		ofSaveImage(comp, saveString, OF_IMAGE_QUALITY_BEST);  
 		saveNow = false; 
@@ -211,17 +255,16 @@ void testApp::draw() {
 		ofSetColor (255); 
 		bgImg.draw(0,0, greenPic[curPic].width, greenPic[curPic].height); 
 		
-		ofEnableAlphaBlending();
 		switch (wingState) {
 			case 1:
-				cout << "case 1: new pic, no wings yet" << endl; 
-				
+				//cout << "case 1: this is where editing is possible" << endl; 
+				isSaved = false; 
 				//this is where you can choose the background color. see mousePressed()
 				break;
 			
 			case 2: 
-				cout << "case 2: position wings" << endl; 
-				isSaved = false; 
+				//cout << "case 2: position wings" << endl; 
+				
 				if (hires) {
 				wingXoff = (ofGetMouseX()*(3.8667)) - wingsHI.width/2; 
 				wingYoff = (ofGetMouseY()*(3.8667)) - (wingsHI.height - wingsHI.height/3); 
@@ -235,7 +278,7 @@ void testApp::draw() {
 				break; 
 				
 			case 3:
-				cout << "case 3: save wing pos" << endl; 
+				//cout << "case 3: save wing pos" << endl; 
 				wingPos.x = wingXoff; 
 				wingPos.y = wingYoff; 
 				wingPos.z = 1.0; 
@@ -250,11 +293,9 @@ void testApp::draw() {
 				break;
 		}
 
-	
-		ofDisableAlphaBlending();
 
 		
-		greenscreen.draw(0, 0, greenscreen.getWidth(), greenscreen.getHeight());
+	greenscreen.draw(0, 0, greenscreen.getWidth(), greenscreen.getHeight());
 		
 		//if (picOn) greenPic[curPic].draw(0, 0);
 		greenscreen.drawBgColor();
@@ -277,13 +318,12 @@ void testApp::draw() {
 	}
 	ofSetColor(255);
 	ofDrawBitmapString("1. CLICK AN AREA TO KEY", 500, 100);
-	ofDrawBitmapString("2. SPACEBAR TO EDIT", 500, 115);
-	ofDrawBitmapString("3. LEFT/ RIGHT TO CHANGE PICS", 500, 130);
-	ofDrawBitmapString("4. S TO SAVE", 500, 145);
-	ofDrawBitmapString("5. H TO TOGGLE RES", 500, 160);
+	ofDrawBitmapString("2. Q OR SPACEBAR TO EDIT", 500, 115);
+	ofDrawBitmapString("3. S TO SAVE", 500, 145);
+	ofDrawBitmapString("4. H TO TOGGLE RES", 500, 160);
 	
 	ofSetColor(0, 255, 0); 
-	ofDrawBitmapString("Loading image num: " + ofToString(curPic), 500, 185);
+	ofDrawBitmapString("Loading image: " + newFile, 500, 185);
 	ofDrawBitmapString("Saved to data folder: " + saveString, 500, 200);
 	
 	
@@ -334,8 +374,12 @@ void testApp::keyPressed(int key) {
 //--------------------------------------------------------------
 void testApp::keyReleased(int key) {
 #ifdef USE_GUI
-	if(key == ' ')
+	if(key == ' ') {
+		if (quickToggle) quickGui->toggleVisible(); 
 		gui.toggleDraw();
+		guiToggle = !guiToggle; 
+	}
+	
 #endif
 	
 	if (key == 'p') picOn = !picOn; 
@@ -358,6 +402,20 @@ void testApp::keyReleased(int key) {
 		hires = !hires; 
 		go = true;
 	}
+	
+	if (key == 'q') {
+		if (gui.isOn()) gui.hide();
+		quickToggle = !quickToggle; 
+		quickGui->toggleVisible(); 
+		
+	}
+	
+	if (quickToggle) {
+		wingState = 1; 
+	} else {
+		wingState = 2; 
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -373,6 +431,8 @@ void testApp::mouseDragged(int x, int y, int button) {
 	 return;
 	 greenscreen.learnBgColor(greenPic.getPixelsRef(), dragStart.x, dragStart.y, x-dragStart.x, y-dragStart.y);
 	 */
+	
+	if (wingState == 0) editing = true; 
 }
 
 //--------------------------------------------------------------
@@ -382,6 +442,7 @@ void testApp::mousePressed(int x, int y, int button) {
 #endif
 	if (wingState == 1) {
 	greenscreen.setBgColor(greenPicOrig[curPic].getPixelsRef().getColor(x, y));
+	cout << "get color" << endl; 
 	} else if (wingState == 2) {
 		wingState = 3; 
 	}
@@ -405,6 +466,71 @@ void testApp::mouseReleased(int x, int y, int button) {
 	}
 	
 	go = true;
+	editing = false; 
+}
+
+//--------------------------------------------------------------
+void testApp::guiEvent(ofxUIEventArgs &e)
+{
+	
+	
+	string name = e.widget->getName(); 
+	int kind = e.widget->getKind(); 
+	
+	if(name == "CLIPBLACK")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		greenscreen.clipBlackEndMask = slider->getScaledValue(); 
+        cout << "value: " << slider->getScaledValue() << endl; 
+	}
+	
+	if(name == "CLIPWHITE")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		greenscreen.clipWhiteEndMask = slider->getScaledValue(); 
+        cout << "value: " << slider->getScaledValue() << endl; 
+	}
+	
+	if(name == "DETAILBLACK")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		greenscreen.clipBlackDetailMask = slider->getScaledValue(); 
+        cout << "value: " << slider->getScaledValue() << endl; 
+	}
+	
+	if(name == "DETAILWHITE")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		greenscreen.clipWhiteDetailMask = slider->getScaledValue(); 
+        cout << "value: " << slider->getScaledValue() << endl; 
+	}
+
+	if(name == "DETAILWHITE")
+	{
+		ofxUISlider *slider = (ofxUISlider *) e.widget; 
+		greenscreen.clipWhiteDetailMask = slider->getScaledValue(); 
+        cout << "value: " << slider->getScaledValue() << endl; 
+	}
+	
+	/*
+	
+    else if(kind == OFX_UI_WIDGET_LABELTOGGLE)
+    {
+        ofxUILabelToggle *toggle = (ofxUILabelToggle *) e.widget; 
+		if (toggle->getValue() == 0) {
+			wingState = 1; 
+		} else {
+			wingState = 2; 
+		}
+        cout << name << "\t value: " << toggle->getValue() << endl;                 
+    }
+	 */
+
+}
+//--------------------------------------------------------------
+void testApp::exit()
+{
+    delete quickGui; 
 }
 
 //--------------------------------------------------------------
