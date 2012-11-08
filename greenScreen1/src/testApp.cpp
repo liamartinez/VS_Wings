@@ -51,6 +51,7 @@ void testApp::setup() {
 
 	
 	//greenscreen the first frame
+	greenscreen.clear();
 	greenscreen.setPixels(greenPic[curPic].getPixelsRef());
 	comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
 	greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
@@ -105,8 +106,7 @@ void testApp::setup() {
 	
 	
 #endif
-	
-	gui.addButton ("save comp", saveHi); 
+
 	gui.loadFromXML();
 	ofBackground(0);
 }
@@ -211,17 +211,16 @@ void testApp::draw() {
 		ofSetColor (255); 
 		bgImg.draw(0,0, greenPic[curPic].width, greenPic[curPic].height); 
 		
-		ofEnableAlphaBlending();
 		switch (wingState) {
 			case 1:
 				cout << "case 1: new pic, no wings yet" << endl; 
-				
+				isSaved = false; 
 				//this is where you can choose the background color. see mousePressed()
 				break;
 			
 			case 2: 
 				cout << "case 2: position wings" << endl; 
-				isSaved = false; 
+				
 				if (hires) {
 				wingXoff = (ofGetMouseX()*(3.8667)) - wingsHI.width/2; 
 				wingYoff = (ofGetMouseY()*(3.8667)) - (wingsHI.height - wingsHI.height/3); 
@@ -250,11 +249,9 @@ void testApp::draw() {
 				break;
 		}
 
-	
-		ofDisableAlphaBlending();
 
 		
-		greenscreen.draw(0, 0, greenscreen.getWidth(), greenscreen.getHeight());
+	greenscreen.draw(0, 0, greenscreen.getWidth(), greenscreen.getHeight());
 		
 		//if (picOn) greenPic[curPic].draw(0, 0);
 		greenscreen.drawBgColor();
@@ -382,6 +379,7 @@ void testApp::mousePressed(int x, int y, int button) {
 #endif
 	if (wingState == 1) {
 	greenscreen.setBgColor(greenPicOrig[curPic].getPixelsRef().getColor(x, y));
+	cout << "get color" << endl; 
 	} else if (wingState == 2) {
 		wingState = 3; 
 	}

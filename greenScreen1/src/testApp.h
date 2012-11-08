@@ -2,7 +2,6 @@
 
 #include "ofMain.h"
 #include "ofxGreenscreen.h"
-#include "ofxTileSaver.h"
 
 class testApp : public ofBaseApp {
 
@@ -49,8 +48,7 @@ public:
 	
 	int curPic;
 	int totalFiles; 
-	
-	ofxTileSaver saver;
+
 	bool saveHi; 
 	
 	ofPixels comp; 
@@ -66,5 +64,7 @@ public:
 	int wingState; 
 	
 	bool saveNow, isSaved; 
+	
+	ofImage angel;
 	
 };
