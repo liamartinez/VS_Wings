@@ -17,9 +17,9 @@
     </Toggle_greenspill>
     <ColorPicker_key_color>
         <name>key color</name>
-        <values_0>0.184313729</values_0>
-        <values_1>0.423529416</values_1>
-        <values_2>0.200000003</values_2>
+        <values_0>0.078431375</values_0>
+        <values_1>0.784313738</values_1>
+        <values_2>0.078431375</values_2>
         <values_3>1.000000000</values_3>
     </ColorPicker_key_color>
     <SliderFloat_base_mask_strength>
@@ -56,14 +56,10 @@
     </SliderFloat_end_mask_black>
     <SliderFloat_end_mask_white>
         <name>end mask white</name>
-        <value>0.600000024</value>
+        <value>0.473684222</value>
     </SliderFloat_end_mask_white>
     <Button_save_images>
         <name>save images</name>
         <value>0</value>
     </Button_save_images>
-    <Button_save_comp>
-        <name>save comp</name>
-        <value>0</value>
-    </Button_save_comp>
 </controls>

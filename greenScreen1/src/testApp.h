@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxGreenscreen.h"
+#include "ofxUI.h"
 
 class testApp : public ofBaseApp {
 
@@ -9,6 +10,7 @@ public:
 	void setup();
 	void update();
 	void draw();
+	void exit(); 
 
 	void keyPressed  (int key);
 	void keyReleased(int key);
@@ -66,6 +68,17 @@ public:
 	
 	bool saveNow, isSaved; 
 	
+	bool quickEditMode; 
+	
 	ofImage angel;
+	
+	//ofxUI
+	ofxUICanvas *quickGui;   	
+	void guiEvent(ofxUIEventArgs &e);
+	float red, green, blue; 	
+	bool editing; 
+	string status;
+	bool quickToggle;
+	bool guiToggle; 
 	
 };
