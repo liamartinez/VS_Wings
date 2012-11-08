@@ -1,9 +1,8 @@
 require 'rubygems'
 require 'sinatra'
 require 'haml'
+require 'aws/s3'
 
-# Helpers
-require './lib/render_partial'
 
 # Set Sinatra variables
 set :app_file, __FILE__
