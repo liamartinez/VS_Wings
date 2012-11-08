@@ -26,7 +26,7 @@ public:
 	ofImage greenPic[4];
 	ofImage greenPicOrig[4];
 
-	ofImage angel;
+	ofImage bgImg;
 	ofImage mask;
 	ofImage baseMask;
 	ofImage detailMask;
@@ -59,5 +59,12 @@ public:
 	
 	ofDirectory dir;
 	int numFiles, oldFiles; 
+
+	int wingXoff, wingYoff;
+	int wingScale; 
+	ofImage wings, wingsHI; 
+	int wingState; 
+	
+	bool saveNow, isSaved; 
 	
 };

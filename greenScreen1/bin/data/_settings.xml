@@ -17,18 +17,19 @@
     </Toggle_greenspill>
     <ColorPicker_key_color>
         <name>key color</name>
-        <values_0>0.384313732</values_0>
-        <values_1>0.745098054</values_1>
-        <values_2>0.419607848</values_2>
+        <values_0>0.184313729</values_0>
+        <values_1>0.423529416</values_1>
+        <values_2>0.200000003</values_2>
+
         <values_3>1.000000000</values_3>
     </ColorPicker_key_color>
     <SliderFloat_base_mask_strength>
         <name>base mask strength</name>
-        <value>0.300000012</value>
+        <value>0.625000000</value>
     </SliderFloat_base_mask_strength>
     <SliderFloat_chroma_mask_strength>
         <name>chroma mask strength</name>
-        <value>0.400000006</value>
+        <value>0.239999995</value>
     </SliderFloat_chroma_mask_strength>
     <SliderFloat_green_spill_strength>
         <name>green spill strength</name>
@@ -44,11 +45,11 @@
     </SliderFloat_base_mask_white>
     <SliderFloat_detail_mask_black>
         <name>detail mask black</name>
-        <value>0.100000001</value>
+        <value>0.535000026</value>
     </SliderFloat_detail_mask_black>
     <SliderFloat_detail_mask_white>
         <name>detail mask white</name>
-        <value>0.600000024</value>
+        <value>0.930000007</value>
     </SliderFloat_detail_mask_white>
     <SliderFloat_end_mask_black>
         <name>end mask black</name>
