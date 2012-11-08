@@ -26,6 +26,7 @@ void testApp::setup() {
 	
 	numFiles =  dir.numFiles();
 	totalFiles = numFiles; 
+	newFile = dir.getName(totalFiles-1);
 	for(int i = 0; i < numFiles; i++){
 		cout << dir.getPath(i) << endl;
 	}
@@ -36,8 +37,8 @@ void testApp::setup() {
 	wingsHI.loadImage ("pics/angelwingsHI.png"); 
 
 	//set image paths before loading
-	imgPath = "pics/low/" + ofToString(curPic) + ".JPG";
-	imgPathHi = "pics/hi/" + ofToString(curPic) + "b.JPG";
+	imgPath = "pics/low/" + newFile; 
+	imgPathHi = "pics/hi/" + newFile; 
 	
 	
 
@@ -124,6 +125,8 @@ void testApp::update() {
 	if (dir.numFiles() > numFiles) {
 		totalFiles++; 
 		curPic = totalFiles - 1; 
+		newFile = dir.getName(totalFiles-1);
+		cout << "name of new file: " << newFile << endl; 
 		numFiles = dir.numFiles(); 
 		wingState = 2; 
 		go = true; 
@@ -131,8 +134,8 @@ void testApp::update() {
 	
 	if (go) {
 		cout << "                                go" << endl;
-		imgPath = "pics/low/" + ofToString(curPic) + ".JPG";
-		imgPathHi = "pics/hi/" + ofToString(curPic) + "b.JPG";
+		imgPath = "pics/" + newFile; 
+		imgPathHi = "pics/hi/" + newFile;
 		if (hires) {
 			greenPic[curPic].loadImage(imgPathHi); 
 			greenPicOrig[curPic].loadImage(imgPathHi); 
@@ -213,13 +216,13 @@ void testApp::draw() {
 		
 		switch (wingState) {
 			case 1:
-				cout << "case 1: new pic, no wings yet" << endl; 
+				//cout << "case 1: new pic, no wings yet" << endl; 
 				isSaved = false; 
 				//this is where you can choose the background color. see mousePressed()
 				break;
 			
 			case 2: 
-				cout << "case 2: position wings" << endl; 
+				//cout << "case 2: position wings" << endl; 
 				
 				if (hires) {
 				wingXoff = (ofGetMouseX()*(3.8667)) - wingsHI.width/2; 
@@ -234,7 +237,7 @@ void testApp::draw() {
 				break; 
 				
 			case 3:
-				cout << "case 3: save wing pos" << endl; 
+				//cout << "case 3: save wing pos" << endl; 
 				wingPos.x = wingXoff; 
 				wingPos.y = wingYoff; 
 				wingPos.z = 1.0; 
@@ -280,7 +283,7 @@ void testApp::draw() {
 	ofDrawBitmapString("5. H TO TOGGLE RES", 500, 160);
 	
 	ofSetColor(0, 255, 0); 
-	ofDrawBitmapString("Loading image num: " + ofToString(curPic), 500, 185);
+	ofDrawBitmapString("Loading image: " + newFile, 500, 185);
 	ofDrawBitmapString("Saved to data folder: " + saveString, 500, 200);
 	
 	

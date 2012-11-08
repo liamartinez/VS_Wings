@@ -57,6 +57,7 @@ public:
 	
 	ofDirectory dir;
 	int numFiles, oldFiles; 
+	string newFile; 
 
 	int wingXoff, wingYoff;
 	int wingScale; 
