@@ -65,6 +65,7 @@ public:
 	int numFiles, oldFiles; 
 	string newFile; 
 	bool isEmpty; 
+	void checkFiles(); 
 
 	int wingXoff, wingYoff;
 	int wingScale; 

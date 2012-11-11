@@ -27,6 +27,9 @@ public:
 	void gotMessage(ofMessage msg);
 
 	ofxGreenscreen greenscreen;
+	ofxGreenscreen keyPic; 
+	
+	
 	//ofVideoGrabber grabber;
 	ofImage greenPic[4];
 	ofImage greenPicOrig[4];
@@ -95,7 +98,7 @@ public:
 	CanonCameraWrapper	camera;
 	
 	ofTexture			tex;
-	ofImage				testLoad;
+	ofImage				testLoad, testLoadKey;
 	bool				texIsInitialised;
 	ofPixels texGreen; 
 	ofPixels origTex;

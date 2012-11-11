@@ -30,32 +30,7 @@ void testApp::setup() {
 		ofAddListener(camera.evtImageDownloaded, this, &testApp::imageDownloaded);
 	}
 	
-	curPic = 0; //current picture. start from default 0.
-	hires = false; //start with lores as default 
-	
-	//ofdirectory
-	dir.allowExt("jpg");
-	dir.setShowHidden(false);
-	
-	
-	//set image paths before loading
-	imgPath = "pics/low/" + newFile; 
-	imgPathHi = "pics/hi/" + newFile; 
-	
-	
-	if (hires) {
-		dir.listDir("pics/hi");
 
-	} else {
-		dir.listDir("pics/low");
-	} 
-	
-	numFiles =  dir.numFiles();
-	if (numFiles > 0 ) {
-		wingState = 1; 
-	} else {
-		wingState = 4; 
-	}
 
 	if (wingState != 4) {
 		setupImgs(); 	
@@ -72,12 +47,7 @@ void testApp::setup() {
 //--------------------------------------------------------------
 void testApp::setupImgs() {
 	
-	totalFiles = numFiles; 
-	newFile = dir.getName(totalFiles-1);
-	for(int i = 0; i < numFiles; i++){
-		cout << dir.getPath(i) << endl;
-	}
-	
+
 	//load bg and wings
 	bgImg.loadImage ("pics/stage-background.jpg"); 
 	wings.loadImage ("pics/angelwings.png"); 
@@ -87,25 +57,8 @@ void testApp::setupImgs() {
 	origTex.allocate(512, 360, 4);
 	texGreen.allocate(512, 360, 4);
 	greenFBO.allocate(512, 360);
-	tempImage.allocate(512, 360, OF_IMAGE_COLOR);
 	
-	
-	/*
-	if (hires) {
-		greenPic[curPic].loadImage(imgPathHi); 
-		greenPicOrig[curPic].loadImage(imgPathHi); 
-	} else {
-		greenPic[curPic].loadImage(imgPath); 
-		greenPicOrig[curPic].loadImage(imgPath); 
-	}
-	*/
-	//greenscreen the first frame
-	/*
-	greenscreen.clear();
-	greenscreen.setPixels(greenPic[curPic].getPixelsRef());
-	comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
-	greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
-	*/
+
 	picOn = false; //original pic
 	go = true; //make the greenscreening a one-burst event
 	
@@ -141,29 +94,7 @@ void testApp::update() {
 		toggleFunc();
 		isEmpty = false; 
 	}
-	
-	//check the directory to see if there is a new file.
-	/*
-	if (hires) {
-		dir.listDir("pics/hi");
-	} else {
-		dir.listDir("pics/low");
-	}
-	
-	if (dir.numFiles() > numFiles) {
-		totalFiles++; 
-		curPic = totalFiles - 1; 
-		newFile = dir.getName(totalFiles-1);
-		cout << "name of new file: " << newFile << endl; 
-		numFiles = dir.numFiles(); 
-		cout << "numFiles " << numFiles << endl; 
-		wingState = 2; 
-		go = true; 
-		isEmpty = true; 
-	}
-	*/
 
-	
 	if (wingState !=4) {
 		//if (go || editing) {
 		cout << "                                go" << endl;
@@ -172,7 +103,7 @@ void testApp::update() {
 		//greenFBO.allocate(greenPic[curPic].width, greenPic[curPic].height);
 		//comp.allocate(greenPic[curPic].width, greenPic[curPic].height, 4);
 
-		tex.readToPixels(origTex);
+
 		tex.readToPixels(texGreen);
 	
 		greenscreen.setPixels(texGreen);
@@ -181,10 +112,25 @@ void testApp::update() {
 		go = false; 
 			//}
 	
+		//if (wingState == 3) {
+			if (testLoad.isAllocated())
+			{
+
+				//testLoad.draw(512,0,512,512.0f*2.0f/3.0f);
+				//testLoad.draw(0, 360, 512, 360); 
+				keyPic.setPixels(testLoad.getPixelsRef());
+				ofDrawBitmapString(ofToString(testLoad.getWidth()), 512, 10);
+				ofDrawBitmapString(ofToString(testLoad.getHeight()), 512, 20);
+			}
+		//}
+		
 #ifdef USE_GUI
 	if(gui.isOn()) {
 
+		if (wingState !=3) {
 		greenscreen.setBgColor(ofColor(bgCol.r*255, bgCol.g*255, bgCol.b*255));
+
+
 		//if(grabber.isFrameNew()) {
 		//THIS PART IS REALLY SLOW!!!
 		mask.setFromPixels(greenscreen.getMask());
@@ -196,6 +142,17 @@ void testApp::update() {
 		greenSub.setFromPixels(greenscreen.getGreenSub());
 		blueSub.setFromPixels(greenscreen.getBlueSub());
 		//}
+		} else {
+		keyPic.setBgColor(ofColor(bgCol.r*255, bgCol.g*255, bgCol.b*255));
+		mask.setFromPixels(keyPic.getMask());
+		detailMask.setFromPixels(keyPic.getDetailMask());
+		baseMask.setFromPixels(keyPic.getBaseMask());
+		chromaMask.setFromPixels(keyPic.getChromaMask());
+		
+		redSub.setFromPixels(keyPic.getRedSub());
+		greenSub.setFromPixels(keyPic.getGreenSub());
+		blueSub.setFromPixels(keyPic.getBlueSub());
+		}
 		
 		if(saveImgs){
 			mask.saveImage("save/mask.jpg", OF_IMAGE_QUALITY_BEST);
@@ -233,12 +190,18 @@ void testApp::draw() {
 	wingScale = 1.0;
 
 	ofPoint wingPos; 
+	
+	ofEnableAlphaBlending();
+	ofSetColor (255); 
+	bgImg.draw(0,0, 512, 360); 
+	greenscreen.draw(0, 0, 512, 360);
+	greenscreen.drawBgColor();
 
 	//set the FBO
 	greenFBO.begin(); 
 		ofEnableAlphaBlending();
 		ofSetColor (255); 
-		bgImg.draw(0,0, greenPic[curPic].width, greenPic[curPic].height); 
+		bgImg.draw(0,360, keyPic.getWidth(), keyPic.getHeight()); 
 
 		switch (wingState) {
 			case 1:
@@ -260,10 +223,15 @@ void testApp::draw() {
 				wings.draw(wingXoff, wingYoff); //greenscreen pic hires/lowres	
 				}
 				
+				testLoad.loadImage(camera.lastImagePath);
+				testLoadKey.loadImage(camera.lastImagePath);
+				
 				break; 
 				
 			case 3:
 				//cout << "case 3: save wing pos" << endl; 
+				testLoad.loadImage(camera.lastImagePath);
+				testLoadKey.loadImage(camera.lastImagePath);
 				wingPos.x = wingXoff; 
 				wingPos.y = wingYoff; 
 				wingPos.z = 1.0; 
@@ -273,15 +241,18 @@ void testApp::draw() {
 				} else {
 					wings.draw(wingPos);
 				}
+				
+				
 
 				break; 
 		}
 
 	//greenscreen.draw(0, 0, greenscreen.getWidth(), greenscreen.getHeight());
-	greenscreen.draw(0, 0, 512, 360);
+
+	keyPic.draw (0, 360, keyPic.getWidth(), keyPic.getHeight());
 		
 		//if (picOn) greenPic[curPic].draw(0, 0);
-		greenscreen.drawBgColor();
+
 		
 		ofDisableAlphaBlending(); 
 	greenFBO.end();
@@ -289,20 +260,13 @@ void testApp::draw() {
 	//really draw
 	ofSetColor (255); 
 	//greenFBO.draw(0, 0, 480, 720);
-	greenFBO.draw(0, 0, 512, 360);
+	greenFBO.draw(0, 360, 512, 360);
 	
 	//tex.draw(0,0,512,360);
 	ofDrawBitmapString(ofToString(camera.getLiveViewPixelWidth()), 0, 10);
 	ofDrawBitmapString(ofToString(camera.getLiveViewPixelHeight()), 0, 20);
 	
-	if (testLoad.isAllocated())
-	{
-		cout << "allocated?" << endl; 
-		//testLoad.draw(512,0,512,512.0f*2.0f/3.0f);
-		testLoad.draw(0, 360, 512, 360); 
-		ofDrawBitmapString(ofToString(testLoad.getWidth()), 512, 10);
-		ofDrawBitmapString(ofToString(testLoad.getHeight()), 512, 20);
-	}
+
 
 	switch (wingState) {
 			
@@ -322,6 +286,8 @@ void testApp::draw() {
 		case 3:
 		//enable save. 
 		if (!isSaved) saveNow = true; 
+		camera.takePicture();
+			
 		drawInstructionsAuto();
 			break;
 			
@@ -336,8 +302,9 @@ void testApp::draw() {
 			}
 	}
 
-	//ofSetColor(255);
+	ofSetColor(255);
 	//tempImage.draw(0, 360, 512, 360);
+	//tempImage.draw(0, 0);
 }
 
 //--------------------------------------------------------------
@@ -468,6 +435,7 @@ void testApp::keyReleased(int key) {
 
 void testApp::imageDownloaded(string &path) {
 	testLoad.loadImage(camera.lastImagePath);
+	testLoadKey.loadImage(camera.lastImagePath);
 }
 
 //--------------------------------------------------------------
@@ -503,9 +471,9 @@ void testApp::mousePressed(int x, int y, int button) {
 	if (wingState == 1) {
 		//greenscreen.setBgColor(greenPicOrig[curPic].getPixelsRef().getColor(x, y));
 		//tempImage.setFromPixels(origTex, 512, 360, OF_IMAGE_COLOR, true);
-
-		
+		tex.readToPixels(origTex);
 		tempImage.setFromPixels(origTex);
+		tempImage.resize(512, 360);
 
 		greenscreen.setBgColor(tempImage.getPixelsRef().getColor(x, y));
 	cout << "get color" << endl; 

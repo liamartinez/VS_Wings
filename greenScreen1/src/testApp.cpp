@@ -17,8 +17,7 @@ void testApp::setup() {
 	
 	//ofdirectory
 	dir.allowExt("jpg");
-	dir.setShowHidden(false);
-	
+	dir.setShowHidden(false);	
 	
 	//set image paths before loading
 	imgPath = "pics/low/" + newFile; 
@@ -98,7 +97,7 @@ void testApp::setupImgs() {
 //--------------------------------------------------------------
 void testApp::update() {
 	
-	if (isEmpty) {
+	if (isEmpty) { //?? the first time you load, you go to case 1? WEIRD
 		setupImgs(); 
 		toggleFunc();
 		isEmpty = false; 
