@@ -9,6 +9,7 @@ void testApp::setup() {
 	dir.setShowHidden(false);	
 
 	imgPath = "pics/hi/";
+	//imgPath = "/Users/lia/Desktop"; //-> loading images is always relative to data
 	dir.listDir(imgPath);
 	resetFolderAndGetState(); 
 
@@ -65,6 +66,7 @@ void testApp::checkFiles() {
 void testApp::resetFolderAndGetState() {
 	numFiles = dir.numFiles(); 
 	if (dir.numFiles() > 0 ) {
+		statusMsg = "New File! Loading ..."; 
 		newFile = dir.getName(numFiles-1);
 		newFileMsg = "Name of current file: " + newFile; 
 		newFile = dir.getName(numFiles-1);
@@ -84,7 +86,6 @@ void testApp::resetFolderAndGetState() {
 
 //--------------------------------------------------------------
 void testApp::keyPhoto() {	
-	cout << "KEYING" << endl; 
 	photo.loadImage (imgPath + newFile); 
 	photoDupe.loadImage (imgPath + newFile); 
 	
@@ -134,8 +135,7 @@ void testApp::update() {
 //--------------------------------------------------------------
 
 void testApp::draw() {
-	
-	cout << "case " << wingState << endl; 
+
 	wingScale = 1.0;
 	ofPoint wingPos; 
 	
@@ -300,10 +300,14 @@ void testApp::hideAllGui() {
 
 //--------------------------------------------------------------
 
+void testApp::dragEvent(ofDragInfo dragInfo) {
+	cout << dragInfo.files[0] << endl; 
+
+}
+//--------------------------------------------------------------
 
 	void testApp::mouseMoved(int x, int y ){};
 	void testApp::windowResized(int w, int h){};
-	void testApp::dragEvent(ofDragInfo dragInfo){};
 	void testApp::gotMessage(ofMessage msg){};
 
 
