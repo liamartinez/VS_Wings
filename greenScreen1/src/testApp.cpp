@@ -204,7 +204,6 @@ void testApp::draw() {
 	cout << "case " << wingState << endl; 
 	
 	wingScale = 1.0;
-
 	ofPoint wingPos; 
 
 	//set the FBO

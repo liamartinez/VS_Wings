@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxGreenscreen.h"
+#include "ofxSimpleGuiToo.h"
 
 #include "ofxUI.h"
 
@@ -13,7 +14,7 @@ public:
 	void update();
 	void draw();
 	void exit(); 
-	void setupGUI(); 
+	void setupGUI(int x, int y); 
 	void setupImgs(); 
 
 	void keyPressed  (int key);
@@ -31,6 +32,10 @@ public:
 	ofImage greenPic[4];
 	ofImage greenPicOrig[4];
 	void keyPhoto(); 
+	void updateEditAdvanced(); 
+	void saveComp(); 
+	
+	void toggleStates(); 
 
 	ofImage bgImg;
 	ofImage mask;
@@ -47,13 +52,16 @@ public:
 	
 	ofFloatColor tempC;
 	
+	ofFloatColor bgCol; 
+	bool saveImgs;
+	
 	bool picOn; 
 	bool go; 
 	
 	ofFbo greenFBO; 
 	string imgPath, imgPathHi; 
 	
-	int curPic;
+	//int curPic;
 	int totalFiles; 
 
 	bool saveHi; 
@@ -84,15 +92,18 @@ public:
 	//ofxUI
 	ofxUICanvas *quickGui;   	
 	void guiEvent(ofxUIEventArgs &e);
+	void hideAllGui(); 
 	float red, green, blue; 	
 	bool editing; 
 	string status;
 	bool quickToggle;
 	bool guiToggle; 
-	void toggleFunc(); 
+	void toggleGUI(); 
 	
-	void drawInstructionsManual(); 
-	void drawInstructionsAuto(); 
+	bool quickOn; 
+	
+	void drawInstructionsManual(int x, int y); 
+	void drawMessages(int x, int y); 
 	
 
 	string statusMsg; 
