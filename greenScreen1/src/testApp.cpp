@@ -13,18 +13,47 @@ bool saveImgs;
 void testApp::setup() {
 	
 	curPic = 0; //current picture. start from default 0.
-	wingState = 1; //state switch control
-	hires = true; //start with lores as default 
+	hires = false; //start with lores as default 
 	
 	//ofdirectory
 	dir.allowExt("jpg");
+	dir.setShowHidden(false);
+	
+	
+	//set image paths before loading
+	imgPath = "pics/low/" + newFile; 
+	imgPathHi = "pics/hi/" + newFile; 
+	
+	
 	if (hires) {
 		dir.listDir("pics/hi");
+
 	} else {
 		dir.listDir("pics/low");
-	}
+	} 
 	
 	numFiles =  dir.numFiles();
+	if (numFiles > 0 ) {
+		wingState = 1; 
+	} else {
+		wingState = 4; 
+	}
+
+	if (wingState != 4) {
+		setupImgs(); 	
+
+	}
+	
+	
+
+	
+	setupGUI(); 
+	ofBackground(0);
+}
+
+//--------------------------------------------------------------
+void testApp::setupImgs() {
+	
 	totalFiles = numFiles; 
 	newFile = dir.getName(totalFiles-1);
 	for(int i = 0; i < numFiles; i++){
@@ -35,13 +64,7 @@ void testApp::setup() {
 	bgImg.loadImage ("pics/stage-background.jpg"); 
 	wings.loadImage ("pics/angelwings.png"); 
 	wingsHI.loadImage ("pics/angelwingsHI.png"); 
-
-	//set image paths before loading
-	imgPath = "pics/low/" + newFile; 
-	imgPathHi = "pics/hi/" + newFile; 
 	
-	
-
 	if (hires) {
 		greenPic[curPic].loadImage(imgPathHi); 
 		greenPicOrig[curPic].loadImage(imgPathHi); 
@@ -49,7 +72,6 @@ void testApp::setup() {
 		greenPic[curPic].loadImage(imgPath); 
 		greenPicOrig[curPic].loadImage(imgPath); 
 	}
-
 	
 	//greenscreen the first frame
 	greenscreen.clear();
@@ -65,84 +87,22 @@ void testApp::setup() {
 	greenscreen.setBgColor(startColor);
 	
 	saveString = "Nothing saved yet.";
-	gui.setDraw(true);
-	
-#ifdef USE_GUI
-	gui.addTitle("SETTINGS");
-	gui.addToggle("detail mask", greenscreen.doDetailMask);
-	gui.addToggle("base mask", greenscreen.doBaseMask);
-	gui.addToggle("chroma mask", greenscreen.doChromaMask);
-	gui.addToggle("greenspill", greenscreen.doGreenSpill);
-	
-	//gui.addColorPicker("key color", bgColor[0]);
-	gui.addColorPicker("key color", bgCol);
-	gui.addSlider("base mask strength", greenscreen.strengthBaseMask, 0.0, 1.f);
-	gui.addSlider("chroma mask strength", greenscreen.strengthChromaMask, 0.0, 1.f);
-	gui.addSlider("green spill strength", greenscreen.strengthGreenSpill, 0.0, 1.f);
+	wingState = 1; 
 	
 	
-	//gui.addTitle("CLIPPING");
-	gui.addSlider("base mask black", greenscreen.clipBlackBaseMask, 0.0, 1.f);
-	gui.addSlider("base mask white", greenscreen.clipWhiteBaseMask, 0.0, 1.f);
-	gui.addSlider("detail mask black", greenscreen.clipBlackDetailMask, 0.0, 1.f);
-	gui.addSlider("detail mask white", greenscreen.clipWhiteDetailMask, 0.0, 1.f);
-	gui.addSlider("end mask black", greenscreen.clipBlackEndMask, 0.0, 1.f);
-	gui.addSlider("end mask white", greenscreen.clipWhiteEndMask, 0.0, 1.f);
-	
-	gui.addTitle("OUTPUT");
-	gui.addFPSCounter();
-	gui.addButton("save images", saveImgs);
-	
-	//gui.addContent("camera", grabber);
-	//gui.addContent("picture", greenPic[curPic]);
-	gui.addContent("base mask", baseMask);
-	gui.addContent("detail mask", detailMask);
-	gui.addContent("chroma mask", chromaMask);
-	gui.addContent("mask", mask);
-	
-	gui.addContent("red sub", redSub);
-	gui.addContent("green sub", greenSub);
-	gui.addContent("blue sub", blueSub);
-	gui.addContent("keyed", greenscreen);
-	
-	
-#endif
-	
-	//ofxGUI
-	float xInit = OFX_UI_GLOBAL_WIDGET_SPACING; 
-    float length = 320-xInit; 
-	float dim = 24; 
-	
-	quickGui = new ofxUICanvas(ofGetWidth()/2, ofGetHeight()/2 - 100, length+xInit, ofGetHeight());
+	isEmpty = false; 
 
-	quickGui->addLabelToggle("QUICK KEY MODE", false, length-xInit);	
-	
-	quickGui->addSpacer(length-xInit, 1); 	
-	quickGui->addWidgetDown(new ofxUILabel("DETAIL MASK BLACK", OFX_UI_FONT_SMALL)); 	
-	quickGui->addSlider("DETAILBLACK", 0.0, 1.f, greenscreen.clipBlackDetailMask, length-xInit,dim);
-	
-	quickGui->addSpacer(length-xInit, 1); 
-	quickGui->addWidgetDown(new ofxUILabel("DETAIL MASK WHITE", OFX_UI_FONT_SMALL)); 	
-	quickGui->addSlider("DETAILWHITE", 0.0, 1.f, greenscreen.clipWhiteDetailMask, length-xInit,dim);
-	
-	quickGui->addSpacer(length-xInit, 1); 
-	quickGui->addWidgetDown(new ofxUILabel("END MASK BLACK", OFX_UI_FONT_SMALL)); 	
-	quickGui->addSlider("CLIPBLACK", 0.0, 1.f, greenscreen.clipBlackEndMask, length-xInit,dim);
-	
-	quickGui->addSpacer(length-xInit, 1); 
-	quickGui->addWidgetDown(new ofxUILabel("END MASK WHITE", OFX_UI_FONT_SMALL)); 	
-	quickGui->addSlider("CLIPWHITE", 0.0, 1.f, greenscreen.clipWhiteEndMask, length-xInit,dim);
-	ofAddListener(quickGui->newGUIEvent,this,&testApp::guiEvent);	
-	
-	quickToggle = false; 
-	quickGui->toggleVisible(); 
-
-	gui.loadFromXML();
-	ofBackground(0);
 }
+
 
 //--------------------------------------------------------------
 void testApp::update() {
+	
+	if (isEmpty) {
+		setupImgs(); 
+		toggleFunc();
+		isEmpty = false; 
+	}
 	
 	//check the directory to see if there is a new file.
 	if (hires) {
@@ -157,10 +117,15 @@ void testApp::update() {
 		newFile = dir.getName(totalFiles-1);
 		cout << "name of new file: " << newFile << endl; 
 		numFiles = dir.numFiles(); 
+		cout << "numFiles " << numFiles << endl; 
 		wingState = 2; 
 		go = true; 
+		isEmpty = true; 
 	}
 	
+
+	
+	if (wingState !=4) {
 	if (go || editing) {
 		cout << "                                go" << endl;
 		imgPath = "pics/low/" + newFile; 
@@ -194,7 +159,6 @@ void testApp::update() {
 		baseMask.setFromPixels(greenscreen.getBaseMask());
 		chromaMask.setFromPixels(greenscreen.getChromaMask());
 		
-		
 		redSub.setFromPixels(greenscreen.getRedSub());
 		greenSub.setFromPixels(greenscreen.getGreenSub());
 		blueSub.setFromPixels(greenscreen.getBlueSub());
@@ -215,15 +179,7 @@ void testApp::update() {
 	
 	if (saveNow) {
 		greenFBO.readToPixels(comp); 
-		
-		/*
-		if (hires) {
-			saveString = "saved_" + ofToString(curPic) + "_hi.tif"; 
-		} else {
-			saveString = "saved_" + ofToString(curPic) + "_lo.tif"; 
-		}
-		 */
-		
+
 		string newName = newFile; 
 		ofStringReplace(newName, ".JPG", "_");
 		
@@ -238,12 +194,15 @@ void testApp::update() {
 		saveNow = false; 
 		isSaved = true;
 	}
+	}
 	
 #endif
 }
 
 //--------------------------------------------------------------
 void testApp::draw() {
+	
+	cout << "case " << wingState << endl; 
 	
 	wingScale = 1.0;
 
@@ -258,13 +217,13 @@ void testApp::draw() {
 		switch (wingState) {
 			case 1:
 				//cout << "case 1: this is where editing is possible" << endl; 
-				isSaved = false; 
+
 				//this is where you can choose the background color. see mousePressed()
 				break;
 			
 			case 2: 
 				//cout << "case 2: position wings" << endl; 
-				
+
 				if (hires) {
 				wingXoff = (ofGetMouseX()*(3.8667)) - wingsHI.width/2; 
 				wingYoff = (ofGetMouseY()*(3.8667)) - (wingsHI.height - wingsHI.height/3); 
@@ -288,13 +247,10 @@ void testApp::draw() {
 				} else {
 					wings.draw(wingPos);
 				}
-				//enable save. 
-				if (!isSaved) saveNow = true; 
-				break;
+
+				break; 
 		}
 
-
-		
 	greenscreen.draw(0, 0, greenscreen.getWidth(), greenscreen.getHeight());
 		
 		//if (picOn) greenPic[curPic].draw(0, 0);
@@ -306,8 +262,45 @@ void testApp::draw() {
 	//really draw
 	ofSetColor (255); 
 	greenFBO.draw(0, 0, 480, 720);
+
+	switch (wingState) {
+			
+		case 1:
+		isSaved = false; 
+		drawInstructionsManual();
+		#ifdef USE_GUI
+					gui.draw();
+		#endif
+			break;
+			
+		case 2:
+		isSaved = false; 
+		drawInstructionsAuto();
+			break;
+			
+		case 3:
+		//enable save. 
+		if (!isSaved) saveNow = true; 
+		drawInstructionsAuto();
+			break;
+			
+		case 4: 
+			ofSetColor(0);
+			ofRect(0, 0, ofGetWidth(), ofGetHeight()); 
+			ofSetColor(255);
+			if (hires) {
+				ofDrawBitmapString("File Folder is empty. Please Load photo into: " + imgPathHi, ofGetWidth()/2 - 100, ofGetHeight()/2);
+			} else {
+				ofDrawBitmapString("File Folder is empty. Please Load photo into: " + imgPath, ofGetWidth()/2 - 100, ofGetHeight()/2);
+			}
+	}
+
 	
-	
+
+}
+
+//--------------------------------------------------------------
+void testApp::drawInstructionsManual() {
 	//interaface 
 	ofSetColor(255,0,0);
 	ofDrawBitmapString("FPS "+ofToString(ofGetFrameRate()), 500, 20);
@@ -318,22 +311,32 @@ void testApp::draw() {
 	}
 	ofSetColor(255);
 	ofDrawBitmapString("1. CLICK AN AREA TO KEY", 500, 100);
-	ofDrawBitmapString("2. Q OR SPACEBAR TO EDIT", 500, 115);
-	ofDrawBitmapString("3. S TO SAVE", 500, 145);
-	ofDrawBitmapString("4. H TO TOGGLE RES", 500, 160);
+	ofDrawBitmapString("2. Q FOR INTENSE EDIT", 500, 115);
+	ofDrawBitmapString("3. SPACEBAR TO TOGGLE QUICK EDIT AND WING MODE", 500, 130);
+	ofDrawBitmapString("4. S TO SAVE MANUALLY", 500, 145);
+	ofDrawBitmapString("5. H TO TOGGLE RES", 500, 160);
 	
 	ofSetColor(0, 255, 0); 
 	ofDrawBitmapString("Loading image: " + newFile, 500, 185);
 	ofDrawBitmapString("Saved to data folder: " + saveString, 500, 200);
 	
-	
-	
-#ifdef USE_GUI
-	gui.draw();
-#endif
+		ofDrawBitmapString("YOU ARE IN MANUAL MODE. SPACEBAR TO GO TO AUTO MODE", 500, ofGetHeight() - 100); 
 }
 
 //--------------------------------------------------------------
+void testApp::drawInstructionsAuto() {
+	ofSetColor(255,0,0);
+
+	ofSetColor(0, 255, 0); 
+	ofDrawBitmapString("Loading image: " + newFile, 500, 185);
+	ofDrawBitmapString("Saved to data folder: " + saveString, 500, 200);
+	
+	ofDrawBitmapString("YOU ARE IN AUTO MODE. SPACEBAR TO GO TO MANUAL MODE", 500, ofGetHeight() - 100); 
+
+	
+}
+//--------------------------------------------------------------
+
 void testApp::keyPressed(int key) {
 	if(key == OF_KEY_DOWN)
 		greenscreen.clipBlackEndMask -= .01;
@@ -363,10 +366,12 @@ void testApp::keyPressed(int key) {
 		wingState = 2; 
 	}
 
+	/*
 	if (key == 'e') {
 		wingState = wingState % 3; 
 		wingState ++; 
 	}
+	 */
 	
 	
 }
@@ -374,7 +379,7 @@ void testApp::keyPressed(int key) {
 //--------------------------------------------------------------
 void testApp::keyReleased(int key) {
 #ifdef USE_GUI
-	if(key == ' ') {
+	if(key == 'q') {
 		if (quickToggle) quickGui->toggleVisible(); 
 		gui.toggleDraw();
 		guiToggle = !guiToggle; 
@@ -403,10 +408,8 @@ void testApp::keyReleased(int key) {
 		go = true;
 	}
 	
-	if (key == 'q') {
-		if (gui.isOn()) gui.hide();
-		quickToggle = !quickToggle; 
-		quickGui->toggleVisible(); 
+	if (key == ' ') {
+		toggleFunc();
 		
 	}
 	
@@ -416,6 +419,14 @@ void testApp::keyReleased(int key) {
 		wingState = 2; 
 	}
 
+}
+
+//--------------------------------------------------------------
+
+void testApp::toggleFunc() {
+	if (gui.isOn()) gui.hide();
+		quickToggle = !quickToggle; 
+		quickGui->toggleVisible(); 
 }
 
 //--------------------------------------------------------------
@@ -511,20 +522,7 @@ void testApp::guiEvent(ofxUIEventArgs &e)
 		greenscreen.clipWhiteDetailMask = slider->getScaledValue(); 
         cout << "value: " << slider->getScaledValue() << endl; 
 	}
-	
-	/*
-	
-    else if(kind == OFX_UI_WIDGET_LABELTOGGLE)
-    {
-        ofxUILabelToggle *toggle = (ofxUILabelToggle *) e.widget; 
-		if (toggle->getValue() == 0) {
-			wingState = 1; 
-		} else {
-			wingState = 2; 
-		}
-        cout << name << "\t value: " << toggle->getValue() << endl;                 
-    }
-	 */
+
 
 }
 //--------------------------------------------------------------
@@ -546,4 +544,77 @@ void testApp::gotMessage(ofMessage msg) {
 //--------------------------------------------------------------
 void testApp::dragEvent(ofDragInfo dragInfo) {
 	
+}
+
+//--------------------------------------------------------------
+void testApp::setupGUI() {
+#ifdef USE_GUI
+	gui.addTitle("SETTINGS");
+	gui.addToggle("detail mask", greenscreen.doDetailMask);
+	gui.addToggle("base mask", greenscreen.doBaseMask);
+	gui.addToggle("chroma mask", greenscreen.doChromaMask);
+	gui.addToggle("greenspill", greenscreen.doGreenSpill);
+	
+	//gui.addColorPicker("key color", bgColor[0]);
+	gui.addColorPicker("key color", bgCol);
+	gui.addSlider("base mask strength", greenscreen.strengthBaseMask, 0.0, 1.f);
+	gui.addSlider("chroma mask strength", greenscreen.strengthChromaMask, 0.0, 1.f);
+	gui.addSlider("green spill strength", greenscreen.strengthGreenSpill, 0.0, 1.f);
+	
+	
+	//gui.addTitle("CLIPPING");
+	gui.addSlider("base mask black", greenscreen.clipBlackBaseMask, 0.0, 1.f);
+	gui.addSlider("base mask white", greenscreen.clipWhiteBaseMask, 0.0, 1.f);
+	gui.addSlider("detail mask black", greenscreen.clipBlackDetailMask, 0.0, 1.f);
+	gui.addSlider("detail mask white", greenscreen.clipWhiteDetailMask, 0.0, 1.f);
+	gui.addSlider("end mask black", greenscreen.clipBlackEndMask, 0.0, 1.f);
+	gui.addSlider("end mask white", greenscreen.clipWhiteEndMask, 0.0, 1.f);
+	
+	gui.addTitle("OUTPUT");
+	gui.addFPSCounter();
+	gui.addButton("save images", saveImgs);
+	
+	//gui.addContent("camera", grabber);
+	//gui.addContent("picture", greenPic[curPic]);
+	gui.addContent("base mask", baseMask);
+	gui.addContent("detail mask", detailMask);
+	gui.addContent("chroma mask", chromaMask);
+	gui.addContent("mask", mask);
+	
+	gui.addContent("red sub", redSub);
+	gui.addContent("green sub", greenSub);
+	gui.addContent("blue sub", blueSub);
+	gui.addContent("keyed", greenscreen);
+	
+	
+#endif
+	
+	//ofxGUI
+	float xInit = OFX_UI_GLOBAL_WIDGET_SPACING; 
+    float length = 320-xInit; 
+	float dim = 24; 
+	
+	quickGui = new ofxUICanvas(ofGetWidth()/2 - 20, ofGetHeight()/2 - 170, length+xInit, ofGetHeight());
+	
+	quickGui->addLabelToggle("QUICK EDIT", false, length-xInit);	
+	
+	quickGui->addSpacer(length-xInit, 1); 	
+	quickGui->addWidgetDown(new ofxUILabel("DETAIL MASK BLACK", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("DETAILBLACK", 0.0, 1.f, greenscreen.clipBlackDetailMask, length-xInit,dim);
+	
+	quickGui->addSpacer(length-xInit, 1); 
+	quickGui->addWidgetDown(new ofxUILabel("DETAIL MASK WHITE", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("DETAILWHITE", 0.0, 1.f, greenscreen.clipWhiteDetailMask, length-xInit,dim);
+	
+	quickGui->addSpacer(length-xInit, 1); 
+	quickGui->addWidgetDown(new ofxUILabel("END MASK BLACK", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("CLIPBLACK", 0.0, 1.f, greenscreen.clipBlackEndMask, length-xInit,dim);
+	
+	quickGui->addSpacer(length-xInit, 1); 
+	quickGui->addWidgetDown(new ofxUILabel("END MASK WHITE", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("CLIPWHITE", 0.0, 1.f, greenscreen.clipWhiteEndMask, length-xInit,dim);
+	ofAddListener(quickGui->newGUIEvent,this,&testApp::guiEvent);	
+	
+	quickToggle = true; 
+	gui.loadFromXML();
 }

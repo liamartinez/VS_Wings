@@ -2,15 +2,19 @@
 
 #include "ofMain.h"
 #include "ofxGreenscreen.h"
+
 #include "ofxUI.h"
 
 class testApp : public ofBaseApp {
 
 public:
+
 	void setup();
 	void update();
 	void draw();
 	void exit(); 
+	void setupGUI(); 
+	void setupImgs(); 
 
 	void keyPressed  (int key);
 	void keyReleased(int key);
@@ -60,6 +64,7 @@ public:
 	ofDirectory dir;
 	int numFiles, oldFiles; 
 	string newFile; 
+	bool isEmpty; 
 
 	int wingXoff, wingYoff;
 	int wingScale; 
@@ -80,5 +85,11 @@ public:
 	string status;
 	bool quickToggle;
 	bool guiToggle; 
+	void toggleFunc(); 
+	
+	void drawInstructionsManual(); 
+	void drawInstructionsAuto(); 
+	
+
 	
 };

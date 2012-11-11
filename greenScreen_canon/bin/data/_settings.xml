@@ -1,0 +1,65 @@
+<controls>
+    <Toggle_detail_mask>
+        <name>detail mask</name>
+        <value>1</value>
+    </Toggle_detail_mask>
+    <Toggle_base_mask>
+        <name>base mask</name>
+        <value>1</value>
+    </Toggle_base_mask>
+    <Toggle_chroma_mask>
+        <name>chroma mask</name>
+        <value>1</value>
+    </Toggle_chroma_mask>
+    <Toggle_greenspill>
+        <name>greenspill</name>
+        <value>1</value>
+    </Toggle_greenspill>
+    <ColorPicker_key_color>
+        <name>key color</name>
+        <values_0>0.403921574</values_0>
+        <values_1>0.752941191</values_1>
+        <values_2>0.423529416</values_2>
+        <values_3>1.000000000</values_3>
+    </ColorPicker_key_color>
+    <SliderFloat_base_mask_strength>
+        <name>base mask strength</name>
+        <value>0.625000000</value>
+    </SliderFloat_base_mask_strength>
+    <SliderFloat_chroma_mask_strength>
+        <name>chroma mask strength</name>
+        <value>0.239999995</value>
+    </SliderFloat_chroma_mask_strength>
+    <SliderFloat_green_spill_strength>
+        <name>green spill strength</name>
+        <value>0.375000000</value>
+    </SliderFloat_green_spill_strength>
+    <SliderFloat_base_mask_black>
+        <name>base mask black</name>
+        <value>0.439999998</value>
+    </SliderFloat_base_mask_black>
+    <SliderFloat_base_mask_white>
+        <name>base mask white</name>
+        <value>0.600000024</value>
+    </SliderFloat_base_mask_white>
+    <SliderFloat_detail_mask_black>
+        <name>detail mask black</name>
+        <value>0.535000026</value>
+    </SliderFloat_detail_mask_black>
+    <SliderFloat_detail_mask_white>
+        <name>detail mask white</name>
+        <value>0.930000007</value>
+    </SliderFloat_detail_mask_white>
+    <SliderFloat_end_mask_black>
+        <name>end mask black</name>
+        <value>0.319999993</value>
+    </SliderFloat_end_mask_black>
+    <SliderFloat_end_mask_white>
+        <name>end mask white</name>
+        <value>0.473684222</value>
+    </SliderFloat_end_mask_white>
+    <Button_save_images>
+        <name>save images</name>
+        <value>0</value>
+    </Button_save_images>
+</controls>
