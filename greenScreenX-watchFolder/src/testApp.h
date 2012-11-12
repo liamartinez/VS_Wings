@@ -103,12 +103,16 @@ public:
 	bool quickOn; 
 	
 	void drawInstructionsManual(int x, int y); 
+	void drawInstructinsAuto (int x, int y); 
 	void drawMessages(int x, int y); 
 	
+	ofTrueTypeFont msg; 
+	ofTrueTypeFont msgBig; 
 
 	string statusMsg; 
 	string newFileMsg; 
 	string totalFilesMsg; 
 	string savedFileMsg; 
+	string stateMsg; 
 	
 };

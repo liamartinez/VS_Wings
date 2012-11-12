@@ -4,6 +4,11 @@
 //--------------------------------------------------------------
 void testApp::setup() {
 	
+	ofSetWindowShape(1200, 800);
+	msg.loadFont("GUI/NewMedia Fett.ttf", 10);
+	msgBig.loadFont("GUI/NewMedia Fett.ttf", 12);
+	msg.setLetterSpacing(1.2);
+	
 	//ofdirectory
 	dir.allowExt("jpg");
 	dir.setShowHidden(false);	
@@ -14,12 +19,12 @@ void testApp::setup() {
 	resetFolderAndGetState(); 
 
 	setupImgs(); 	
-	setupGUI(30, ofGetHeight() - 500); 
+	setupGUI(800, ofGetHeight() - 400); 
 	
 	ofBackground(0);
 	picOn = false; //original pic
 	saveNow = false; 
-	go = true; //make the greenscreening a one-burst event
+	go = false; //make the greenscreening a one-burst event
 }
 
 //--------------------------------------------------------------
@@ -81,7 +86,7 @@ void testApp::resetFolderAndGetState() {
 		newFileMsg = "No new file.";
 	}
 	totalFilesMsg = "Total num of files in folder: " + ofToString(numFiles); 
-
+	statusMsg = "K. Updated."; 
 }
 
 //--------------------------------------------------------------
@@ -102,6 +107,7 @@ void testApp::update() {
 
 	switch (wingState) {
 		case 1:
+			stateMsg = "You are in EDIT Mode. Spacebar for WINGS"; 
 			if (go || editing) {
 				keyPhoto(); 
 				go = false; 
@@ -111,12 +117,11 @@ void testApp::update() {
 				updateEditAdvanced();
 			}
 			
-			quickOn = true; 
-			toggleGUI();
 			isSaved = false; 
 			break;
 			
 		case 2:
+			stateMsg = "You are in WINGS mode. Spacebar for EDIT"; 
 			hideAllGui();
 			isSaved = false; 
 			break;
@@ -181,17 +186,16 @@ void testApp::draw() {
 	//really draw
 	ofSetColor (255); 
 	if (wingState !=0) {
-		ofPushMatrix();	
-		ofTranslate(ofGetWidth() - 480, 0 );
-		greenFBO.draw(0, 0 , 480, 720);
+		greenFBO.draw(0, 0 , 720, 480);
 		greenscreen.drawBgColor();
-		ofPopMatrix();
 	}
 	
-	drawMessages(30, 30); 
+	drawMessages(800, 30); 
 	if (wingState == 1) {
-		drawInstructionsManual(30, 200);
+		drawInstructionsManual(800, 300);
 		gui.draw();
+	} else if (wingState == 2) {
+		drawInstructinsAuto(800, 300);
 	}
 	
 }
@@ -201,10 +205,11 @@ void testApp::saveComp() {
 	greenFBO.readToPixels(comp); 
 	
 	string newName = newFile; 
-	ofStringReplace(newName, ".JPG", "_");
+	ofStringReplace(newName, ".JPG", "");
 	saveString = "saved_" + newName + ".tif";
 	ofSaveImage(comp, saveString, OF_IMAGE_QUALITY_BEST);  
-	savedFileMsg = "Last photo saved to data folder: " + saveString;
+	savedFileMsg = "LAST PHOTO SAVED TO FOLDER: " + saveString;
+	statusMsg = "READY FOR NEXT PICTURE.";
 	isSaved = true;
 }
 
@@ -272,13 +277,14 @@ void testApp::mouseDragged(int x, int y, int button) {
 }
 //--------------------------------------------------------------
 void testApp::toggleGUI() {
-	
-	if (quickOn) {
+	cout << "toggle gui" << endl; 
+	if (!quickGui->isEnabled()) {
 		quickGui->enable();
-		gui.hide();
+		gui.setDraw(false);
 	} else {
 		quickGui->disable(); 
-		gui.show();
+		gui.setDraw(true);
+		gui.loadFromXML();
 	}
 }
 //--------------------------------------------------------------
@@ -287,6 +293,8 @@ void testApp::toggleStates() {
 		wingState = 2; 
 	} else if (wingState == 2) {
 		wingState = 1; 
+		quickOn = true; 
+		toggleGUI();
 	} else if (wingState == 3) { // if you want to edit again.
 		wingState = 2;
 	}
@@ -295,7 +303,8 @@ void testApp::toggleStates() {
 //--------------------------------------------------------------
 void testApp::hideAllGui() {
 	quickGui->disable();
-	gui.hide();
+	//gui.hide();
+	gui.setDraw(false);
 }
 
 //--------------------------------------------------------------
@@ -328,11 +337,16 @@ void testApp::updateEditAdvanced(){
 void testApp::drawMessages(int x, int y){
 	int inc = 15; 
 	ofSetColor(255,0,0);
-	ofDrawBitmapString("FPS "+ofToString(ofGetFrameRate()), x, y);	
-	ofDrawBitmapString(statusMsg, x, y + (inc*2));
-	ofDrawBitmapString(newFileMsg, x, y+(inc*3));
-	ofDrawBitmapString(totalFilesMsg, x, y+(inc*4));
-	ofDrawBitmapString(savedFileMsg, x, y+(inc*5));
+	msgBig.drawString("FPS "+ofToString(ofGetFrameRate()), x, y);	
+	msg.drawString(statusMsg, x, y + (inc*2));
+	
+	ofSetColor(0, 255, 0);
+	msg.drawString(totalFilesMsg, x, y+(inc*4));
+	msg.drawString(newFileMsg, x, y+(inc*5));
+	msg.drawString(savedFileMsg, x, y+(inc*6));
+	
+	ofSetColor (255); 
+	msg.drawString(stateMsg, x, 250);
 }
 //--------------------------------------------------------------
 void testApp::drawInstructionsManual(int x, int y) {
@@ -340,8 +354,20 @@ void testApp::drawInstructionsManual(int x, int y) {
 	
 	int inc = 15; 
 	ofSetColor(255);
-	ofDrawBitmapString("CLICK AN AREA TO KEY", x, y);
-	ofDrawBitmapString("Q TO TOGGLE DETAIL EDIT/ QUICK EDIT", x, y + (inc*2));
+	msg.drawString("Click an area to key.", x, y);
+	msg.drawString("Q to toggle Quick Edit/ Detail edit.", x, y + (inc));
+}
+
+//--------------------------------------------------------------
+void testApp::drawInstructinsAuto(int x, int y) {
+	//interaface 
+	
+	int inc = 15; 
+	ofSetColor(255);
+	msg.drawString("Click where you want the wings to go.", x, y);
+	msg.drawString("Spacebar to change position.", x, y + inc);
+	msg.drawString("An image is saved every time.", x, y + (inc*2));
+	
 }
 
 //--------------------------------------------------------------
@@ -352,41 +378,33 @@ void testApp::guiEvent(ofxUIEventArgs &e)
 	string name = e.widget->getName(); 
 	int kind = e.widget->getKind(); 
 	
-	if(name == "CLIPBLACK")
+	if(name == "Clip Black")
 	{
 		ofxUISlider *slider = (ofxUISlider *) e.widget; 
 		greenscreen.clipBlackEndMask = slider->getScaledValue(); 
         cout << "value: " << slider->getScaledValue() << endl; 
 	}
 	
-	if(name == "CLIPWHITE")
+	if(name == "Clip White")
 	{
 		ofxUISlider *slider = (ofxUISlider *) e.widget; 
 		greenscreen.clipWhiteEndMask = slider->getScaledValue(); 
         cout << "value: " << slider->getScaledValue() << endl; 
 	}
 	
-	if(name == "DETAILBLACK")
+	if(name == "Detail Black")
 	{
 		ofxUISlider *slider = (ofxUISlider *) e.widget; 
 		greenscreen.clipBlackDetailMask = slider->getScaledValue(); 
         cout << "value: " << slider->getScaledValue() << endl; 
 	}
 	
-	if(name == "DETAILWHITE")
+	if(name == "Detail White")
 	{
 		ofxUISlider *slider = (ofxUISlider *) e.widget; 
 		greenscreen.clipWhiteDetailMask = slider->getScaledValue(); 
         cout << "value: " << slider->getScaledValue() << endl; 
 	}
-	
-	if(name == "DETAILWHITE")
-	{
-		ofxUISlider *slider = (ofxUISlider *) e.widget; 
-		greenscreen.clipWhiteDetailMask = slider->getScaledValue(); 
-        cout << "value: " << slider->getScaledValue() << endl; 
-	}
-	
 	
 }
 //--------------------------------------------------------------
@@ -433,27 +451,30 @@ void testApp::setupGUI(int x, int y) {
     float length = 320-xInit; 
 	float dim = 24; 
 	
-	quickGui = new ofxUICanvas(x, y, length+xInit, ofGetHeight());
+	quickGui = new ofxUICanvas(x-10, y, length+xInit, ofGetHeight());
 	
-	quickGui->addLabelToggle("QUICK EDIT", false, length-xInit);	
 	
+	//quickGui->addLabelToggle("QUICK EDIT", false, length-xInit);	
+	
+
 	quickGui->addSpacer(length-xInit, 1); 	
-	quickGui->addWidgetDown(new ofxUILabel("DETAIL MASK BLACK", OFX_UI_FONT_SMALL)); 	
-	quickGui->addSlider("DETAILBLACK", 0.0, 1.f, greenscreen.clipBlackDetailMask, length-xInit,dim);
+	//quickGui->addWidgetDown(new ofxUILabel("Detail Mask Black", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("Detail Black", 0.0, 1.f, greenscreen.clipBlackDetailMask, length-xInit,dim);
 	
 	quickGui->addSpacer(length-xInit, 1); 
-	quickGui->addWidgetDown(new ofxUILabel("DETAIL MASK WHITE", OFX_UI_FONT_SMALL)); 	
-	quickGui->addSlider("DETAILWHITE", 0.0, 1.f, greenscreen.clipWhiteDetailMask, length-xInit,dim);
+	//quickGui->addWidgetDown(new ofxUILabel("Detail Mask White", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("Detail White", 0.0, 1.f, greenscreen.clipWhiteDetailMask, length-xInit,dim);
 	
 	quickGui->addSpacer(length-xInit, 1); 
-	quickGui->addWidgetDown(new ofxUILabel("END MASK BLACK", OFX_UI_FONT_SMALL)); 	
-	quickGui->addSlider("CLIPBLACK", 0.0, 1.f, greenscreen.clipBlackEndMask, length-xInit,dim);
+	//quickGui->addWidgetDown(new ofxUILabel("End Mask Black", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("Clip Black", 0.0, 1.f, greenscreen.clipBlackEndMask, length-xInit,dim);
 	
 	quickGui->addSpacer(length-xInit, 1); 
-	quickGui->addWidgetDown(new ofxUILabel("END MASK WHITE", OFX_UI_FONT_SMALL)); 	
-	quickGui->addSlider("CLIPWHITE", 0.0, 1.f, greenscreen.clipWhiteEndMask, length-xInit,dim);
+	//quickGui->addWidgetDown(new ofxUILabel("End Mask White", OFX_UI_FONT_SMALL)); 	
+	quickGui->addSlider("Clip White", 0.0, 1.f, greenscreen.clipWhiteEndMask, length-xInit,dim);
 	ofAddListener(quickGui->newGUIEvent,this,&testApp::guiEvent);	
+	quickGui->enable();
 	
-	quickToggle = true; 
+	gui.setAutoSave(false);
 	gui.loadFromXML();
 }
