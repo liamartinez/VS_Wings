@@ -14,17 +14,24 @@ void testApp::setup() {
 	dir.setShowHidden(false);	
 
 	imgPath = "pics/hi/";
-	//imgPath = "/Users/lia/Desktop"; //-> loading images is always relative to data
+	savePath = "pics/saved";
+	//imgPath = "/Users/lia/Desktop/pics/hi/"; //-> loading images is always relative to data
 	dir.listDir(imgPath);
 	resetFolderAndGetState(); 
 
 	setupImgs(); 	
-	setupGUI(800, ofGetHeight() - 400); 
+	setupGUI(800, ofGetHeight() - 450); 
 	
 	ofBackground(0);
 	picOn = false; //original pic
 	saveNow = false; 
 	go = false; //make the greenscreening a one-burst event
+	
+	dragOut = false; 
+	dragIn = false; 
+	
+	wingScale = 1; 
+	
 }
 
 //--------------------------------------------------------------
@@ -51,10 +58,9 @@ void testApp::setupImgs() {
 void testApp::checkFiles() {
 	dir.listDir(imgPath);
 	if (dir.numFiles() > numFiles) {
-		numFiles++; 
+		numFiles = dir.numFiles(); 
 		newFile = dir.getName(numFiles-1);
 		newFileMsg = "Name of current file: " + newFile; 
-		numFiles = dir.numFiles(); 
 		totalFilesMsg = "Total num of files in folder: " + ofToString(numFiles); 
 		statusMsg = "K. Updated."; 
 		wingState = 1; 
@@ -63,8 +69,26 @@ void testApp::checkFiles() {
 		statusMsg = "Files have been deleted. Reseting totals."; 
 		resetFolderAndGetState(); 
 	} else if (dir.numFiles() < 1 ) {
-		totalFilesMsg = "Folder is empty. Please Load photo into: " + imgPath; 
+		statusMsg = "Folder is empty. Load photo in input folder.";
+		totalFilesMsg = "emptiness."; 
 	}
+}
+
+//--------------------------------------------------------------
+bool testApp::checkSavedFiles() {
+	dir.listDir(savePath); 
+	if (dir.numFiles() > numSavedFiles) {
+		numSavedFiles = dir.numFiles(); 
+		statusMsg = "File saved!";
+		return true; 
+	} else if (dir.numFiles() < numSavedFiles) {
+		statusMsg = "Files have been deleted from save folder. Resetting totals.";
+		numSavedFiles = dir.numFiles(); 
+		return false; 
+	} else {
+		return false; 
+	}
+	
 }
 
 //--------------------------------------------------------------
@@ -93,11 +117,14 @@ void testApp::resetFolderAndGetState() {
 void testApp::keyPhoto() {	
 	photo.loadImage (imgPath + newFile); 
 	photoDupe.loadImage (imgPath + newFile); 
+	photoDupe.resize(720, 480);
 	
 	comp.allocate(photo.width, photo.height, 4);
 	greenFBO.allocate(photo.width, photo.height);
 	
 	greenscreen.setPixels(photo.getPixelsRef());
+	
+	cout << "keying" << endl; 
 }
 
 //--------------------------------------------------------------
@@ -133,15 +160,17 @@ void testApp::update() {
 	
 	if (saveNow) {
 		saveComp();
+		checkSavedFiles(); 
 		saveNow = false; 
 	}
+	
+	cout << "go? " << go << endl; 
 	
 }
 //--------------------------------------------------------------
 
 void testApp::draw() {
 
-	wingScale = 1.0;
 	ofPoint wingPos; 
 	
 	//set the FBO
@@ -191,13 +220,14 @@ void testApp::draw() {
 	}
 	
 	drawMessages(800, 30); 
+	drawFileMsgs (800, 650); 
 	if (wingState == 1) {
 		drawInstructionsManual(800, 300);
 		gui.draw();
-	} else if (wingState == 2) {
+	} else if (wingState == 2 || wingState == 3) {
 		drawInstructinsAuto(800, 300);
 	}
-	
+
 }
 
 //--------------------------------------------------------------
@@ -207,10 +237,13 @@ void testApp::saveComp() {
 	string newName = newFile; 
 	ofStringReplace(newName, ".JPG", "");
 	saveString = "saved_" + newName + ".tif";
-	ofSaveImage(comp, saveString, OF_IMAGE_QUALITY_BEST);  
-	savedFileMsg = "LAST PHOTO SAVED TO FOLDER: " + saveString;
-	statusMsg = "READY FOR NEXT PICTURE.";
+	ofSaveImage(comp, savePath + "/" + saveString, OF_IMAGE_QUALITY_BEST);  
+	if (checkSavedFiles()) {
+		savedFileMsg = "Last photo saved to folder: " + saveString;
+		statusMsg = "saved successfully.";
+	}
 	isSaved = true;
+
 }
 
 //--------------------------------------------------------------
@@ -242,6 +275,9 @@ void testApp::keyReleased(int key) {
 	if (key == ' ') {
 		toggleStates(); 
 	}
+	
+	if (key == 'i') dragIn = !dragIn; 
+	if (key == 'o') dragOut = !dragOut; 
 
 }
 
@@ -249,8 +285,11 @@ void testApp::keyReleased(int key) {
 void testApp::mousePressed(int x, int y, int button) {
 	
 	if(!gui.isOn()) {
-		if (wingState == 1) {
+		if (wingState == 1) { 
+			if (x < photoDupe.width && y < photoDupe.height) {
 			greenscreen.setBgColor(photoDupe.getPixelsRef().getColor(x, y));
+			go = true; 
+			}
 		} else if (wingState == 2) {
 			wingState = 3; 
 		}
@@ -263,21 +302,22 @@ void testApp::mousePressed(int x, int y, int button) {
 	bgCol.g = c.g/255.;
 	bgCol.b = c.b/255.;
 	}
-	
-	go = true; 
 }
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button) {
-	editing = false; 
+	if (wingState == 1) editing = false; 
 }
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button) {
-	if (wingState == 0) editing = true; 
+	if (wingState == 1) {
+		editing = true;
+	} else {
+		editing = false;
+	}
 }
 //--------------------------------------------------------------
 void testApp::toggleGUI() {
-	cout << "toggle gui" << endl; 
 	if (!quickGui->isEnabled()) {
 		quickGui->enable();
 		gui.setDraw(false);
@@ -310,9 +350,51 @@ void testApp::hideAllGui() {
 //--------------------------------------------------------------
 
 void testApp::dragEvent(ofDragInfo dragInfo) {
+	if (dragIn) {
+		imgPath = dragInfo.files[0]+ "/"; 
+		dragIn = false; 
+	}
+	if (dragOut) {
+		savePath = dragInfo.files[0]+ "/"; 
+		dragOut = false; 
+	}
+	
 	cout << dragInfo.files[0] << endl; 
 
 }
+
+//--------------------------------------------------------------
+
+void testApp::drawFileMsgs(int x, int y) {
+	
+	if (dragIn) {
+		ofSetColor(255, 0, 0);
+		inputMsg = "Drag new input folder";
+		dragOut = false;
+	} 	else {
+		ofSetColor(255);
+		inputMsg = "I to enter a new input folder"; 
+	}
+	ofDrawBitmapString(inputMsg, x,y + 15);
+	ofSetColor(255);
+	inPathMsg = "Input folder is: " + imgPath; 
+	ofDrawBitmapString(inPathMsg, x, y );
+
+	if (dragOut) {
+		ofSetColor(255, 0, 0);
+		outputMsg = "Drag new output folder";
+		dragIn = false;
+	} else {
+		ofSetColor(255);
+		outputMsg = "O to enter a new output folder"; 
+	}
+	ofDrawBitmapString (outputMsg, x, y + 60);
+	ofSetColor(255);
+	outPathMsg = "Output folder is: " + savePath; 
+	ofDrawBitmapString (outPathMsg, x, y + 45);
+		
+}
+
 //--------------------------------------------------------------
 
 	void testApp::mouseMoved(int x, int y ){};
@@ -342,10 +424,12 @@ void testApp::drawMessages(int x, int y){
 	
 	ofSetColor(0, 255, 0);
 	msg.drawString(totalFilesMsg, x, y+(inc*4));
-	msg.drawString(newFileMsg, x, y+(inc*5));
-	msg.drawString(savedFileMsg, x, y+(inc*6));
+	msg.drawString(newFileMsg, x, y+(inc*6));
+	msg.drawString(savedFileMsg, x, y+(inc*7));
 	
 	ofSetColor (255); 
+	ofNoFill(); 
+	ofRect(x - 10, 250 - 20, 350, 30);
 	msg.drawString(stateMsg, x, 250);
 }
 //--------------------------------------------------------------
@@ -472,6 +556,7 @@ void testApp::setupGUI(int x, int y) {
 	quickGui->addSpacer(length-xInit, 1); 
 	//quickGui->addWidgetDown(new ofxUILabel("End Mask White", OFX_UI_FONT_SMALL)); 	
 	quickGui->addSlider("Clip White", 0.0, 1.f, greenscreen.clipWhiteEndMask, length-xInit,dim);
+		
 	ofAddListener(quickGui->newGUIEvent,this,&testApp::guiEvent);	
 	quickGui->enable();
 	

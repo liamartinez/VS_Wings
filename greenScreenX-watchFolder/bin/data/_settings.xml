@@ -5,15 +5,15 @@
     </Toggle_detail_mask>
     <Toggle_base_mask>
         <name>base mask</name>
-        <value>1</value>
+        <value>0</value>
     </Toggle_base_mask>
     <Toggle_chroma_mask>
         <name>chroma mask</name>
-        <value>1</value>
+        <value>0</value>
     </Toggle_chroma_mask>
     <Toggle_greenspill>
         <name>greenspill</name>
-        <value>1</value>
+        <value>0</value>
     </Toggle_greenspill>
     <ColorPicker_key_color>
         <name>key color</name>
