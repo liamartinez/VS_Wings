@@ -61,6 +61,7 @@ public:
 	
 	ofFbo greenFBO; 
 	string imgPath, imgPathHi; 
+	string savePath; 
 	
 	//int curPic;
 	int totalFiles; 
@@ -73,9 +74,11 @@ public:
 	
 	ofDirectory dir;
 	int numFiles, oldFiles; 
+	int numSavedFiles; 
 	string newFile; 
 	bool isEmpty; 
 	void checkFiles(); 
+	bool checkSavedFiles(); 
 	void resetFolderAndGetState(); 
 
 	int wingXoff, wingYoff;
@@ -115,6 +118,13 @@ public:
 	string totalFilesMsg; 
 	string savedFileMsg; 
 	string stateMsg;
+
+	void drawFileMsgs(int x, int y); 
+	string inputMsg, inPathMsg; 
+	string outputMsg, outPathMsg; 
+	
+	bool dragIn; 
+	bool dragOut; 
 	
 	//camera
 	void imageDownloaded(string &path);
@@ -125,5 +135,7 @@ public:
 	bool				texIsInitialised;
 	void setupCamera(); 
 	void updateCamera(); 
+	
+	
 	
 };

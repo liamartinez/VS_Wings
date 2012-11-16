@@ -14,6 +14,7 @@ void testApp::setup() {
 	dir.setShowHidden(false);	
 	
 	imgPath = "pics/hi/";
+	savePath = "pics/saved/";
 	dir.listDir(imgPath);
 	resetFolderAndGetState(); 
 	
@@ -25,6 +26,121 @@ void testApp::setup() {
 	picOn = false; //original pic
 	saveNow = false; 
 	go = false; //make the greenscreening a one-burst event	
+	
+	dragOut = false; 
+	dragIn = false; 
+}
+//--------------------------------------------------------------
+void testApp::update() {
+	
+	//checkFiles(); 
+	
+	switch (wingState) {
+		case 0:
+			updateCamera(); 
+			break; 
+			
+		case 1:
+			stateMsg = "You are in EDIT Mode. Spacebar for WINGS"; 
+			if (go || editing) {
+				keyPhoto(); 
+				go = false; 
+			}
+			
+			if(gui.isOn()) {
+				updateEditAdvanced();
+			}
+			
+			isSaved = false; 
+			break;
+			
+		case 2:
+			stateMsg = "You are in WINGS mode. Spacebar for EDIT"; 
+			hideAllGui();
+			isSaved = false; 
+			break;
+			
+		case 3:
+			if (!isSaved) saveNow = true; 
+	}
+	
+	
+	if (saveNow) {
+		saveComp();
+		checkSavedFiles();
+		saveNow = false; 
+	}	
+}
+//--------------------------------------------------------------
+
+void testApp::draw() {
+	
+	wingScale = 1.0;
+	ofPoint wingPos; 
+	
+	//set the FBO
+	greenFBO.begin(); 
+	ofEnableAlphaBlending();
+	ofSetColor (255); 
+	bgImg.draw(0,0, photo.width, photo.height); 
+	
+	switch (wingState) {
+			
+		case 1:
+			
+			break;
+			
+		case 2: 
+			//cout << "case 2: position wings" << endl; 
+			
+			//ratio of highres to drawing
+			wingXoff = (ofGetMouseX()*(3.8667)) - wingsHI.width/2; 
+			wingYoff = (ofGetMouseY()*(3.8667)) - (wingsHI.height - wingsHI.height/3); 
+			wingsHI.draw(wingXoff, wingYoff); 			
+			break; 
+			
+		case 3:
+			//cout << "case 3: save wing pos" << endl; 
+			wingPos.x = wingXoff; 
+			wingPos.y = wingYoff; 
+			wingPos.z = 1.0; 
+			
+			wingsHI.draw(wingPos);	
+			break; 
+	}
+	
+	greenscreen.draw(0, 0, photo.width, photo.height);
+	ofDisableAlphaBlending(); 
+	greenFBO.end();
+	
+	//really draw
+	ofSetColor (255); 
+	if (wingState !=0) {
+		greenFBO.draw(0, 0 , 720, 480);
+		greenscreen.drawBgColor();
+	}
+	
+	drawMessages(800, 30); 
+	drawFileMsgs (800, 650); 
+	
+	if (wingState == 0) {
+		tex.draw(0,0,720,480);
+		ofDrawBitmapString(ofToString(camera.getLiveViewPixelWidth()), 0, 10);
+		ofDrawBitmapString(ofToString(camera.getLiveViewPixelHeight()), 0, 20);
+	}
+	else if (wingState == 1) {
+		drawInstructionsManual(800, 300);
+		if (photo.isAllocated())
+		{
+			//photo.draw(0,480 , 512,360);
+			ofDrawBitmapString(ofToString(testLoad.getWidth()), 512, 10);
+			ofDrawBitmapString(ofToString(testLoad.getHeight()), 512, 20);
+		}
+		gui.draw();
+	} else if (wingState == 2 || wingState == 3) {
+		drawInstructinsAuto(800, 300);
+	}
+	
 }
 
 //--------------------------------------------------------------
@@ -86,6 +202,23 @@ void testApp::checkFiles() {
 }
 
 //--------------------------------------------------------------
+bool testApp::checkSavedFiles() {
+	dir.listDir(savePath); 
+	if (dir.numFiles() > numSavedFiles) {
+		numSavedFiles = dir.numFiles(); 
+		statusMsg = "File saved!";
+		return true; 
+	} else if (dir.numFiles() < numSavedFiles) {
+		statusMsg = "Files have been deleted from save folder. Resetting totals.";
+		numSavedFiles = dir.numFiles(); 
+		return false; 
+	} else {
+		return false; 
+	}
+	
+}
+
+//--------------------------------------------------------------
 void testApp::resetFolderAndGetState() {
 	numFiles = dir.numFiles(); 
 	if (dir.numFiles() > 0 ) {
@@ -110,6 +243,7 @@ void testApp::resetFolderAndGetState() {
 void testApp::keyPhoto() {	
 	photo.loadImage (newFile); 
 	photoDupe.loadImage (newFile); 
+	photoDupe.resize(720, 480);
 	
 	comp.allocate(photo.width, photo.height, 4);
 	greenFBO.allocate(photo.width, photo.height);
@@ -130,116 +264,6 @@ void testApp::updateCamera(){
 			tex.loadData(camera.getLiveViewPixels(), camera.getLiveViewPixelWidth(), camera.getLiveViewPixelHeight(), GL_RGB);
 	}
 }
-//--------------------------------------------------------------
-void testApp::update() {
-	
-	//checkFiles(); 
-	
-	switch (wingState) {
-		case 0:
-			updateCamera(); 
-			break; 
-			
-		case 1:
-			stateMsg = "You are in EDIT Mode. Spacebar for WINGS"; 
-			if (go || editing) {
-				keyPhoto(); 
-				go = false; 
-			}
-			
-			if(gui.isOn()) {
-				updateEditAdvanced();
-			}
-			
-			isSaved = false; 
-			break;
-			
-		case 2:
-			stateMsg = "You are in WINGS mode. Spacebar for EDIT"; 
-			hideAllGui();
-			isSaved = false; 
-			break;
-			
-		case 3:
-			if (!isSaved) saveNow = true; 
-	}
-	
-	
-	if (saveNow) {
-		saveComp();
-		saveNow = false; 
-	}
-	
-}
-//--------------------------------------------------------------
-
-void testApp::draw() {
-		
-	wingScale = 1.0;
-	ofPoint wingPos; 
-	
-	//set the FBO
-	greenFBO.begin(); 
-	ofEnableAlphaBlending();
-	ofSetColor (255); 
-	bgImg.draw(0,0, photo.width, photo.height); 
-	
-	switch (wingState) {
-			
-		case 1:
-
-			break;
-			
-		case 2: 
-			//cout << "case 2: position wings" << endl; 
-			
-			//ratio of highres to drawing
-			wingXoff = (ofGetMouseX()*(3.8667)) - wingsHI.width/2; 
-			wingYoff = (ofGetMouseY()*(3.8667)) - (wingsHI.height - wingsHI.height/3); 
-			wingsHI.draw(wingXoff, wingYoff); 			
-			break; 
-			
-		case 3:
-			//cout << "case 3: save wing pos" << endl; 
-			wingPos.x = wingXoff; 
-			wingPos.y = wingYoff; 
-			wingPos.z = 1.0; 
-			
-			wingsHI.draw(wingPos);	
-			break; 
-	}
-	
-	greenscreen.draw(0, 0, photo.width, photo.height);
-	ofDisableAlphaBlending(); 
-	greenFBO.end();
-	
-	//really draw
-	ofSetColor (255); 
-	if (wingState !=0) {
-		greenFBO.draw(0, 0 , 720, 480);
-		greenscreen.drawBgColor();
-	}
-	
-	drawMessages(800, 30); 
-	if (wingState == 0) {
-		tex.draw(0,0,720,480);
-		ofDrawBitmapString(ofToString(camera.getLiveViewPixelWidth()), 0, 10);
-		ofDrawBitmapString(ofToString(camera.getLiveViewPixelHeight()), 0, 20);
-	}
-	else if (wingState == 1) {
-		drawInstructionsManual(800, 300);
-		if (photo.isAllocated())
-		{
-			photo.draw(0,480 , 512,360);
-			ofDrawBitmapString(ofToString(testLoad.getWidth()), 512, 10);
-			ofDrawBitmapString(ofToString(testLoad.getHeight()), 512, 20);
-		}
-		gui.draw();
-	} else if (wingState == 2) {
-		drawInstructinsAuto(800, 300);
-	}
-	
-}
 
 //--------------------------------------------------------------
 
@@ -250,8 +274,9 @@ void testApp::imageDownloaded(string &path) {
 	cout << "new file: " << newFile << endl; 
 	photo.loadImage(newFile);
 	photoDupe.loadImage(newFile);
+	wingState = 1; 
 	go = true; 
-
+	
 	
 }
 //--------------------------------------------------------------
@@ -260,13 +285,20 @@ void testApp::saveComp() {
 	
 	string newName = newFile; 
 	ofStringReplace(newName, ".JPG", "");
-	ofStringReplace(newName, imgPath, "");
+	//ofStringReplace (newName,"pics/hi/", ""); 
+	ofStringReplace (newName,imgPath, ""); 
 	saveString = "saved_" + newName + ".tif";
-	ofSaveImage(comp, saveString, OF_IMAGE_QUALITY_BEST);  
-	savedFileMsg = "LAST PHOTO SAVED TO FOLDER: " + saveString;
-	statusMsg = "READY FOR NEXT PICTURE.";
+	cout << "save to: " <<  savePath + saveString << endl; 
+	ofSaveImage(comp,  savePath + saveString, OF_IMAGE_QUALITY_BEST);  
+	if (checkSavedFiles()) {
+		savedFileMsg = "Last photo saved to folder: " + saveString;
+		statusMsg = "saved successfully.";
+		cout << "saved?" << endl; 
+	}
 	isSaved = true;
+	
 }
+
 
 //--------------------------------------------------------------
 
@@ -298,14 +330,20 @@ void testApp::keyReleased(int key) {
 		toggleStates(); 
 	}
 	
+	if (key == 'i') dragIn = !dragIn; 
+	if (key == 'o') dragOut = !dragOut; 
+	
 }
 
 //--------------------------------------------------------------
 void testApp::mousePressed(int x, int y, int button) {
 	
 	if(!gui.isOn()) {
-		if (wingState == 1) {
-			greenscreen.setBgColor(photoDupe.getPixelsRef().getColor(x, y));
+		if (wingState == 1) { 
+			if (x < photoDupe.width && y < photoDupe.height) {
+				greenscreen.setBgColor(photoDupe.getPixelsRef().getColor(x, y));
+				go = true; 
+			}
 		} else if (wingState == 2) {
 			wingState = 3; 
 		}
@@ -327,13 +365,13 @@ void testApp::mouseReleased(int x, int y, int button) {
 	editing = false; 
 	if (wingState == 0) {
 		camera.takePicture();
-		wingState = 1; 
+		//wingState = 1; 
 	}
 	
 }
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button) {
-	if (wingState == 0) editing = true; 
+	if (wingState == 1) editing = true; 
 }
 //--------------------------------------------------------------
 void testApp::toggleGUI() {
@@ -370,7 +408,48 @@ void testApp::hideAllGui() {
 //--------------------------------------------------------------
 
 void testApp::dragEvent(ofDragInfo dragInfo) {
+	if (dragIn) {
+		imgPath = dragInfo.files[0]+ "/"; 
+		dragIn = false; 
+	}
+	if (dragOut) {
+		savePath = dragInfo.files[0]+ "/"; 
+		dragOut = false; 
+	}
+	
 	cout << dragInfo.files[0] << endl; 
+	
+}
+
+//--------------------------------------------------------------
+
+void testApp::drawFileMsgs(int x, int y) {
+	
+	if (dragIn) {
+		ofSetColor(255, 0, 0);
+		inputMsg = "Drag new input folder";
+		dragOut = false;
+	} 	else {
+		ofSetColor(255);
+		inputMsg = "I to enter a new input folder"; 
+	}
+	ofDrawBitmapString(inputMsg, x,y + 15);
+	ofSetColor(255);
+	inPathMsg = "Input folder is: " + imgPath; 
+	ofDrawBitmapString(inPathMsg, x, y );
+	
+	if (dragOut) {
+		ofSetColor(255, 0, 0);
+		outputMsg = "Drag new output folder";
+		dragIn = false;
+	} else {
+		ofSetColor(255);
+		outputMsg = "O to enter a new output folder"; 
+	}
+	ofDrawBitmapString (outputMsg, x, y + 60);
+	ofSetColor(255);
+	outPathMsg = "Output folder is: " + savePath; 
+	ofDrawBitmapString (outPathMsg, x, y + 45);
 	
 }
 //--------------------------------------------------------------
@@ -406,6 +485,8 @@ void testApp::drawMessages(int x, int y){
 	msg.drawString(savedFileMsg, x, y+(inc*6));
 	
 	ofSetColor (255); 
+	ofNoFill(); 
+	ofRect(x - 10, 250 - 20, 350, 30);
 	msg.drawString(stateMsg, x, 250);
 }
 //--------------------------------------------------------------

@@ -702,7 +702,7 @@
 
     //------------------------------------------------------------------------
     EdsError EDSCALLBACK CanonCameraWrapper::handleObjectEvent(EdsObjectEvent event, EdsBaseRef object, EdsVoid *context) {
-        printf("Callback! %i\n", (int)event);
+        //lia //printf("Callback! %i\n", (int)event);
 
         if(event == kEdsObjectEvent_DirItemContentChanged) {
             printf("kEdsObjectEvent_DirItemContentChanged!\n");
@@ -730,7 +730,7 @@
 
     //------------------------------------------------------------------------
 	EdsError EDSCALLBACK CanonCameraWrapper::handlePropertyEvent(EdsPropertyEvent inEvent,  EdsPropertyID inPropertyID, EdsUInt32 inParam, EdsVoid * inContext){
-        printf("Callback! %i\n", (int)inEvent);
+        //lia //printf("Callback! %i\n", (int)inEvent);
 		
 		string prop = "property not listed!";
 		
@@ -767,12 +767,12 @@
 			case  kEdsPropID_HDDirectoryStructure   : prop = "kEdsPropID_HDDirectoryStructure";
 					
 		}
-
+		//lia
         if(inEvent == kEdsPropertyEvent_PropertyChanged) {
-            printf("kEdsPropertyEvent_PropertyChanged - %s!\n", prop.c_str());
+			// printf("kEdsPropertyEvent_PropertyChanged - %s!\n", prop.c_str());
         }
         if(inEvent == kEdsPropertyEvent_PropertyDescChanged) {
-            printf("kEdsPropertyEvent_PropertyDescChanged - %s\n", prop.c_str());
+			//   printf("kEdsPropertyEvent_PropertyDescChanged - %s\n", prop.c_str());
         }
 
 		return 0;
