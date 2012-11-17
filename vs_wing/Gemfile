@@ -1,0 +1,9 @@
+source "http://rubygems.org"
+gem 'rubygems'
+gem 'sinatra'
+
+gem 'slim'
+
+gem 'haml'
+gem 'compass'
+gem 'aws-s3'
