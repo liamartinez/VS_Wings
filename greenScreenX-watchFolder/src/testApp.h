@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxGreenscreen.h"
 #include "ofxSimpleGuiToo.h"
+#include "ofxXmlSettings.h"
 
 #include "ofxUI.h"
 
@@ -72,6 +73,7 @@ public:
 	string saveString; 
 	
 	ofDirectory dir;
+	ofDirectory saveDir; 
 	int numFiles, oldFiles; 
 	int numSavedFiles; 
 	string newFile; 
@@ -85,6 +87,7 @@ public:
 	ofImage wings, wingsHI; 
 	int wingState; 
 	ofImage photo, photoDupe; 
+	ofImage frame; 
 	
 	bool saveNow, isSaved; 
 	
@@ -124,5 +127,9 @@ public:
 	
 	bool dragIn; 
 	bool dragOut; 
+	
+	ofxXmlSettings folderPaths; 
+	void loadXML(); 
+	void saveXML(); 
 	
 };

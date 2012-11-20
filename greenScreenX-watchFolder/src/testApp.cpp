@@ -13,11 +13,15 @@ void testApp::setup() {
 	dir.allowExt("jpg");
 	dir.setShowHidden(false);	
 
-	imgPath = "pics/hi/";
-	savePath = "pics/saved";
-	//imgPath = "/Users/lia/Desktop/pics/hi/"; //-> loading images is always relative to data
+	loadXML();
+	//imgPath = "pics/hi/";
+	//savePath = "pics/saved";
+	
 	dir.listDir(imgPath);
 	resetFolderAndGetState(); 
+	
+	saveDir.listDir(savePath); 
+	numSavedFiles = saveDir.numFiles(); 
 
 	setupImgs(); 	
 	setupGUI(800, ofGetHeight() - 450); 
@@ -30,7 +34,8 @@ void testApp::setup() {
 	dragOut = false; 
 	dragIn = false; 
 	
-	wingScale = 1; 
+	wingScale  = 1; 
+	
 	
 }
 
@@ -39,8 +44,9 @@ void testApp::setupImgs() {
 
 	//load bg and wings
 	bgImg.loadImage ("pics/stage-background.jpg"); 
-	wings.loadImage ("pics/angelwings.png"); 
+	//wings.loadImage ("pics/angelwings.png"); 
 	wingsHI.loadImage ("pics/angelwingsHI.png"); 
+	frame.loadImage("pics/frame.png"); 
 
 	//clear the first frame and key
 	greenscreen.clear();	
@@ -76,19 +82,22 @@ void testApp::checkFiles() {
 
 //--------------------------------------------------------------
 bool testApp::checkSavedFiles() {
-	dir.listDir(savePath); 
-	if (dir.numFiles() > numSavedFiles) {
-		numSavedFiles = dir.numFiles(); 
+	saveDir.listDir(savePath); 
+	cout << "save path: " << savePath << endl; 
+	cout << "saved files: " << saveDir.numFiles() << endl; 
+	cout << "numSavedFiles: " << numSavedFiles << endl; 
+	if (saveDir.numFiles() > numSavedFiles) {
+		cout << "NEW FILE!!!" << endl; 
+		numSavedFiles = saveDir.numFiles(); 
 		statusMsg = "File saved!";
 		return true; 
-	} else if (dir.numFiles() < numSavedFiles) {
+	} else if (saveDir.numFiles() < numSavedFiles) {
 		statusMsg = "Files have been deleted from save folder. Resetting totals.";
-		numSavedFiles = dir.numFiles(); 
+		numSavedFiles = saveDir.numFiles(); 
 		return false; 
 	} else {
 		return false; 
 	}
-	
 }
 
 //--------------------------------------------------------------
@@ -162,10 +171,7 @@ void testApp::update() {
 		saveComp();
 		checkSavedFiles(); 
 		saveNow = false; 
-	}
-	
-	cout << "go? " << go << endl; 
-	
+	}	
 }
 //--------------------------------------------------------------
 
@@ -195,20 +201,22 @@ void testApp::draw() {
 			//ratio of highres to drawing
 			wingXoff = (ofGetMouseX()*(3.8667)) - wingsHI.width/2; 
 			wingYoff = (ofGetMouseY()*(3.8667)) - (wingsHI.height - wingsHI.height/3); 
-			wingsHI.draw(wingXoff, wingYoff); 			
+			wingsHI.draw(wingXoff, wingYoff, wingScale); 	
 			break; 
 			
 		case 3:
 			//cout << "case 3: save wing pos" << endl; 
+			/*
 			wingPos.x = wingXoff; 
 			wingPos.y = wingYoff; 
-			wingPos.z = 1.0; 
-
-			wingsHI.draw(wingPos);	
+			wingPos.z = wingScale; 
+			 */
+			wingsHI.draw(wingXoff, wingYoff, wingScale); 	
 			break; 
 	}
 	
 	greenscreen.draw(0, 0, photo.width, photo.height);
+	frame.draw(0,0, photo.width, photo.height); 
 	ofDisableAlphaBlending(); 
 	greenFBO.end();
 	
@@ -249,11 +257,13 @@ void testApp::saveComp() {
 //--------------------------------------------------------------
 
 void testApp::keyPressed(int key) {
-	/*
+	
 	 //use these for scale and rotate
-	if(key == OF_KEY_DOWN)
+	if(key == OF_KEY_DOWN) wingScale -=10; 
 
-	if(key == OF_KEY_UP)
+	if(key == OF_KEY_UP) wingScale +=10; 
+		
+		/*
 
 	if(key == OF_KEY_LEFT)
 
@@ -360,7 +370,7 @@ void testApp::dragEvent(ofDragInfo dragInfo) {
 	}
 	
 	cout << dragInfo.files[0] << endl; 
-
+	saveXML();
 }
 
 //--------------------------------------------------------------
@@ -562,4 +572,26 @@ void testApp::setupGUI(int x, int y) {
 	
 	gui.setAutoSave(false);
 	gui.loadFromXML();
+}
+
+void testApp::loadXML() {
+	if( folderPaths.loadFile("inOutPaths.xml") ){
+		cout << "inOutPaths.xml loaded!" << endl; 
+	}else{
+		cout << "unable to load inOutPaths.xml check data/ folder" << endl; 
+	}
+	
+	imgPath = folderPaths.getValue("IN:PATH", "pics/in/");
+	savePath = folderPaths.getValue("OUT:PATH", "pics/saved");
+	
+}
+
+void testApp::saveXML() {
+
+	folderPaths.setValue("IN:PATH", imgPath);
+	folderPaths.setValue("OUT:PATH", savePath);
+	
+	folderPaths.saveFile("inOutPaths.xml");
+	cout << "settings saved to xml!" << endl; 
+	
 }
